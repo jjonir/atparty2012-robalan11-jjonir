@@ -45,8 +45,8 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
            WS_OVERLAPPEDWINDOW, /* default window */
            CW_USEDEFAULT,       /* Windows decides the position */
            CW_USEDEFAULT,       /* where the window ends up on the screen */
-           544,                 /* The programs width */
-           375,                 /* and height in pixels */
+           192,                 /* The programs width */
+           200,                 /* and height in pixels */
            HWND_DESKTOP,        /* The window is a child-window to desktop */
            NULL,                /* No menu */
            hThisInstance,       /* Program Instance handler */
@@ -54,23 +54,23 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
            );
 
     /* Copy part of the screen to a window */
-/*
+    
     HDC screen_dc = GetDC(NULL);
     HDC win_dc = GetDC(hwnd);
     HDC bmp_dc = CreateCompatibleDC(win_dc);
-    HBITMAP bmp = CreateCompatibleBitmap(win_dc, 544, 375);
+    
+    int wid = GetDeviceCaps(screen_dc, HORZRES);
+    int hei = GetDeviceCaps(screen_dc, VERTRES);
+    
+    HBITMAP bmp = CreateCompatibleBitmap(win_dc, wid, hei);
     SelectObject(bmp_dc, bmp);
     
-    BitBlt(bmp_dc, 0, 0, 544, 375, screen_dc, 0, 0, SRCCOPY);
-    ShowWindow(hwnd, nFunsterStil);
-    BitBlt(win_dc, 0, 0, 544, 375, bmp_dc, 0, 0, );
-    */
+    BitBlt(bmp_dc, 0, 0, wid, hei, screen_dc, 0, 0, SRCCOPY);
+    //ShowWindow(hwnd, nFunsterStil);
+    SetActiveWindow(hwnd);
     
     /* Invert the screen */
-
-    int wid = GetDeviceCaps(GetDC(NULL), HORZRES);
-    int hei = GetDeviceCaps(GetDC(NULL), VERTRES);
-    BitBlt(GetDC(NULL), 0, 0, wid, hei, GetDC(NULL), 0, 0, NOTSRCCOPY);
+    BitBlt(screen_dc, 0, 0, wid, hei, bmp_dc, 0, 0, NOTSRCCOPY);
     
     
     /* Run the message loop. It will run until GetMessage() returns 0 */
@@ -81,7 +81,10 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
         /* Send message to WindowProcedure */
         DispatchMessage(&messages);
     }
-
+    
+    /* Restore old screen */
+    BitBlt(screen_dc, 0, 0, wid, hei, bmp_dc, 0, 0, SRCCOPY);
+    
     /* The program return-value is 0 - The value that PostQuitMessage() gave */
     return messages.wParam;
 }
@@ -95,6 +98,10 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     {
         case WM_DESTROY:
             PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
+            break;
+        case WM_KEYDOWN:
+            if(wParam == VK_ESCAPE)
+                PostQuitMessage(0);
             break;
         default:                      /* for messages that we don't deal with */
             return DefWindowProc (hwnd, message, wParam, lParam);
