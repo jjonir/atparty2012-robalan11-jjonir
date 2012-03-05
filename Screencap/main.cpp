@@ -1,4 +1,6 @@
 #include <windows.h>
+#include <time.h>
+#include <stdio.h>
 
 /*  Declare Windows procedure  */
 LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
@@ -18,7 +20,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 
     /* The Window structure */
     wincl.hInstance = hThisInstance;
-    wincl.lpszClassName = szClassName;
+    wincl.lpszClassName = (LPCWSTR)szClassName;
     wincl.lpfnWndProc = WindowProcedure;      /* This function is called by windows */
     wincl.style = CS_DBLCLKS;                 /* Catch double-clicks */
     wincl.cbSize = sizeof (WNDCLASSEX);
@@ -40,8 +42,8 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     /* The class is registered, let's create the program*/
     hwnd = CreateWindowEx (
            0,                   /* Extended possibilites for variation */
-           szClassName,         /* Classname */
-           "Windows App",       /* Title Text */
+           (LPCWSTR)szClassName,         /* Classname */
+           (LPCWSTR)"Windows App",       /* Title Text */
            WS_OVERLAPPEDWINDOW, /* default window */
            CW_USEDEFAULT,       /* Windows decides the position */
            CW_USEDEFAULT,       /* where the window ends up on the screen */
@@ -65,26 +67,60 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     HBITMAP bmp = CreateCompatibleBitmap(win_dc, wid, hei);
     SelectObject(bmp_dc, bmp);
     
+	// Get screen
     BitBlt(bmp_dc, 0, 0, wid, hei, screen_dc, 0, 0, SRCCOPY);
+
     //ShowWindow(hwnd, nFunsterStil);
     SetActiveWindow(hwnd);
     
-    /* Invert the screen */
-    BitBlt(screen_dc, 0, 0, wid, hei, bmp_dc, 0, 0, NOTSRCCOPY);
-    
-    
-    /* Run the message loop. It will run until GetMessage() returns 0 */
-    while (GetMessage (&messages, NULL, 0, 0))
+	// Initialize timers
+    clock_t program_timer = 0;
+	clock_t blink_timer = 0;
+	bool invert = true;
+
+    // Run the main loop.
+    while (true)
     {
+		// Get start time of frame
+		clock_t framestart = clock();
+
+		// At 4 seconds, kill it
+		if (program_timer >= 4*CLOCKS_PER_SEC) break;
+
+		// Invert once per second
+		if (blink_timer >= CLOCKS_PER_SEC) {
+			if (invert)
+				BitBlt(screen_dc, 0, 0, wid, hei, bmp_dc, 0, 0, SRCCOPY);
+			else
+				BitBlt(screen_dc, 0, 0, wid, hei, bmp_dc, 0, 0, NOTSRCCOPY);
+			invert = !invert;
+			blink_timer = 0;
+		}
+
+		// See how long frame was, add to program timer - Also make sure frame was at least 1/60 second
+		clock_t frameend = clock();
+		clock_t frame_length = frameend - framestart;
+		if (frame_length < CLOCKS_PER_SEC/60) {
+			Sleep(CLOCKS_PER_SEC/60 - frame_length);
+			frameend = clock();
+			frame_length = frameend - framestart;
+		}
+		program_timer += frame_length;
+		blink_timer += frame_length;
+    }
+    
+    // Restore old screen
+    BitBlt(screen_dc, 0, 0, wid, hei, bmp_dc, 0, 0, SRCCOPY);
+    
+	PostQuitMessage (0);
+
+	while (GetMessage (&messages, NULL, 0, 0)) {
         /* Translate virtual-key messages into character messages */
         TranslateMessage(&messages);
         /* Send message to WindowProcedure */
         DispatchMessage(&messages);
-    }
-    
-    /* Restore old screen */
-    BitBlt(screen_dc, 0, 0, wid, hei, bmp_dc, 0, 0, SRCCOPY);
-    
+	}
+
     /* The program return-value is 0 - The value that PostQuitMessage() gave */
     return messages.wParam;
 }
