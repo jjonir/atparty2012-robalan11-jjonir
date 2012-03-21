@@ -28,26 +28,28 @@ int main(int argc, char *argv[])
 	else
 		printf("glew not ok: %s\n", glewGetErrorString(err));
 
-	GLuint vshad = buildShader(GL_VERTEX_SHADER, cmd_vshad);
-	GLuint fshad = buildShader(GL_FRAGMENT_SHADER, cmd_fshad);
-	cmd_program = buildProgram(vshad, fshad);
+	tunnel_init();
+
+	GLuint vshad = buildShader(GL_VERTEX_SHADER, tunnel_vshad);
+	GLuint fshad = buildShader(GL_FRAGMENT_SHADER, tunnel_fshad);
+	tunnel_program = buildProgram(vshad, fshad);
 
 	printf("empty logs are good! means success.\n");
 
-	glUseProgram(cmd_program);
+	glUseProgram(tunnel_program);
 	glDeleteShader(vshad);
 	glDeleteShader(fshad);
 
 	t0 = glutGet(GLUT_ELAPSED_TIME);
 
-	glutDisplayFunc(cmd_render);
-	glutTimerFunc(10, cmd_animate, 0);
+	glutDisplayFunc(tunnel_render);
+	glutTimerFunc(10, tunnel_animate, 0);
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(key);
 	//glutFullScreen();
 	glutMainLoop();
 
-	glDeleteProgram(plasma_program);
+	glDeleteProgram(tunnel_program);
 
 	return 0;
 }
