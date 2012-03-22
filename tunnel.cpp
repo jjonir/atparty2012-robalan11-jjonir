@@ -13,6 +13,12 @@ GLubyte tunnel_tex_data[] =
 
 void tunnel_init(void)
 {
+	GLuint vshad = buildShader(GL_VERTEX_SHADER, tunnel_vshad, "tunnel vertex");
+	GLuint fshad = buildShader(GL_FRAGMENT_SHADER, tunnel_fshad, "tunnel fragment");
+	tunnel_program = buildProgram(vshad, fshad, "tunnel");
+	glDeleteShader(vshad);
+	glDeleteShader(fshad);
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

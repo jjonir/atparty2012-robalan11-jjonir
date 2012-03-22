@@ -1,10 +1,20 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <math.h>
+#include "shaders.h"
 
 GLuint plasma_program;
-int char_w = 8;
-int char_h = 14;
+static int char_w = 8;
+static int char_h = 14;
+
+void plasma_init(void)
+{
+	GLuint vshad = buildShader(GL_VERTEX_SHADER, tunnel_vshad, "plasma vertex");
+	GLuint fshad = buildShader(GL_FRAGMENT_SHADER, tunnel_fshad, "plasma fragment");
+	tunnel_program = buildProgram(vshad, fshad, "plasma");
+	glDeleteShader(vshad);
+	glDeleteShader(fshad);
+}
 
 void plasma_render(void)
 {

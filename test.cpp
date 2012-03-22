@@ -5,8 +5,6 @@
 #include <math.h>
 #include "shaders.h"
 
-GLuint buildShader(GLenum type, const char *source);
-GLuint buildProgram(GLuint vshad, GLuint fshad);
 void checkVersions(void);
 void key(unsigned char key, int x, int y);
 void reshape(int w, int h);
@@ -28,17 +26,11 @@ int main(int argc, char *argv[])
 	else
 		printf("glew not ok: %s\n", glewGetErrorString(err));
 
+	plasma_init();
 	tunnel_init();
-
-	GLuint vshad = buildShader(GL_VERTEX_SHADER, tunnel_vshad);
-	GLuint fshad = buildShader(GL_FRAGMENT_SHADER, tunnel_fshad);
-	tunnel_program = buildProgram(vshad, fshad);
-
-	printf("empty logs are good! means success.\n");
+	cmd_init();
 
 	glUseProgram(tunnel_program);
-	glDeleteShader(vshad);
-	glDeleteShader(fshad);
 
 	t0 = glutGet(GLUT_ELAPSED_TIME);
 
@@ -52,38 +44,6 @@ int main(int argc, char *argv[])
 	glDeleteProgram(tunnel_program);
 
 	return 0;
-}
-
-/* Convenience fn for building a shader from source.
- * type must be GL_VERTEX_SHADER or GL_FRAGMENT_SHADER.
- * Single source string, NULL-terminated.
- */
-GLuint buildShader(GLenum type, const char *source)
-{
-	char log[1024];
-	GLuint handle = glCreateShader(type);
-	glShaderSource(handle, 1, &source, NULL);
-	glCompileShader(handle);
-	// more error checking would be good, for example only print the log on failure
-	glGetShaderInfoLog(handle, 1024, NULL, log);
-	printf("shader compile log: %s\n", log);
-	return handle;
-}
-
-/* Convenience fn for building a program from shaders.
-   demands one vertex shader and one fragment shader, compiled.
- */
-GLuint buildProgram(GLuint vshad, GLuint fshad)
-{
-	char log[1024];
-	GLuint handle = glCreateProgram();
-	glAttachShader(handle, vshad);
-	glAttachShader(handle, fshad);
-	glLinkProgram(handle);
-	// more error checking would be good, for example only print the log on failure
-	glGetProgramInfoLog(handle, 1024, NULL, log);
-	printf("program link log: %s\n", log);
-	return handle;
 }
 
 void key(unsigned char key, int x, int y)
