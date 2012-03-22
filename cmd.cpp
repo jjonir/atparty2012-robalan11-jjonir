@@ -2,6 +2,7 @@
 #include <GL/glut.h>
 #include <math.h>
 #include "shaders.h"
+#include "cmd_icon.h"
 
 // TODO everything's shifted up by 1 pixel (MinGW, I don't think it was on native gcc)
 // fix this
@@ -503,9 +504,9 @@ static const struct {
 
 void cmd_init(void)
 {
-	GLuint vshad = buildShader(GL_VERTEX_SHADER, tunnel_vshad, "cmd vertex");
-	GLuint fshad = buildShader(GL_FRAGMENT_SHADER, tunnel_fshad, "cmd fragment");
-	tunnel_program = buildProgram(vshad, fshad, "cmd");
+	GLuint vshad = buildShader(GL_VERTEX_SHADER, cmd_vshad, "cmd vertex");
+	GLuint fshad = buildShader(GL_FRAGMENT_SHADER, cmd_fshad, "cmd fragment");
+	cmd_program = buildProgram(vshad, fshad, "cmd");
 	glDeleteShader(vshad);
 	glDeleteShader(fshad);
 

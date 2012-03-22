@@ -9,9 +9,9 @@ static int char_h = 14;
 
 void plasma_init(void)
 {
-	GLuint vshad = buildShader(GL_VERTEX_SHADER, tunnel_vshad, "plasma vertex");
-	GLuint fshad = buildShader(GL_FRAGMENT_SHADER, tunnel_fshad, "plasma fragment");
-	tunnel_program = buildProgram(vshad, fshad, "plasma");
+	GLuint vshad = buildShader(GL_VERTEX_SHADER, plasma_vshad, "plasma vertex");
+	GLuint fshad = buildShader(GL_FRAGMENT_SHADER, plasma_fshad, "plasma fragment");
+	plasma_program = buildProgram(vshad, fshad, "plasma");
 	glDeleteShader(vshad);
 	glDeleteShader(fshad);
 }

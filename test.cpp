@@ -1,7 +1,7 @@
+#include <stdlib.h>
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
 #include "shaders.h"
 
@@ -30,18 +30,18 @@ int main(int argc, char *argv[])
 	tunnel_init();
 	cmd_init();
 
-	glUseProgram(tunnel_program);
+	glUseProgram(cmd_program);
 
 	t0 = glutGet(GLUT_ELAPSED_TIME);
 
-	glutDisplayFunc(tunnel_render);
-	glutTimerFunc(10, tunnel_animate, 0);
+	glutDisplayFunc(cmd_render);
+	glutTimerFunc(10, cmd_animate, 0);
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(key);
 	//glutFullScreen();
 	glutMainLoop();
 
-	glDeleteProgram(tunnel_program);
+	glDeleteProgram(cmd_program);
 
 	return 0;
 }
