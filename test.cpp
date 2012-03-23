@@ -34,14 +34,12 @@ int main(int argc, char *argv[])
 
 	t0 = glutGet(GLUT_ELAPSED_TIME);
 
-	glutDisplayFunc(cmd_render);
-	glutTimerFunc(10, cmd_animate, 0);
+	glutDisplayFunc(tunnel_render);
+	glutTimerFunc(10, tunnel_animate, 0);
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(key);
 	//glutFullScreen();
 	glutMainLoop();
-
-	glDeleteProgram(cmd_program);
 
 	return 0;
 }

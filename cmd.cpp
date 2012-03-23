@@ -125,110 +125,112 @@ const char *cmd_vshad =
 
 const char *cmd_fshad =
 "#version 120\n"
-"#define COLORI(R,G,B) gl_FragColor=vec4(R/256.0,G/256.0,B/256.0,1.0)\n"
+"#define CL(R,G,B) gl_FragColor=vec4(R/256.0,G/256.0,B/256.0,1.0)\n"
+"#define TX(T,V) gl_FragColor=texture2D(T,V)\n"
 "#define RX rel_pos.x\n"
 "#define RY rel_pos.y\n"
 "#define CX cmd_size.x\n"
 "#define CY cmd_size.y\n"
+"#define EI else if\n"
 "uniform ivec2 cmd_pos;"
 "uniform ivec2 cmd_size;"
 "uniform sampler2D IconTex, XTex, ArrowTex;"
 "bool colorButtons(ivec2 rel_pos) {"
 "	bool rv = true;"
 "	if(RX == 49 || RX == 31 || RX == 15 || RY == 0)" //buttons br 0
-"		COLORI(113, 111, 100);"
-"	else if(RX == 0 || RX == 34 || RX == 16 || RY == 20)" //buttons tl 0
-"		COLORI(255, 255, 255);"
-"	else if(RX == 48 || RX == 30 || RX == 14 || RY == 1)" //buttons br 0
-"		COLORI(172, 168, 153);"
-"	else if(RX == 1 || RX == 35 || RX == 17 || RY == 19)" //buttons tl 0
-"		COLORI(241, 239, 226);"
-"	else if(RX >= 4 && RX <= 9 && RY >= 7 && RY <= 8)" //min
-"		COLORI(0, 0, 0);"
-"	else if((RX == 18 || RX == 27) && RY >= 7 && RY <= 15)" //max sides
-"		COLORI(0, 0, 0);"
-"	else if(RX >= 19 && RX <= 26 && (RY == 7 || RY == 14 || RY == 15))" //max top bottom
-"		COLORI(0, 0, 0);"
-"	else if(RX >= 38 && RX <= 45 && RY >= 7 && RY <= 14)" //x
-"		gl_FragColor = texture2D(XTex, (vec2(rel_pos)-vec2(38,7))/vec2(8,8));"
-"	else if(!(RX == 32 || RX == 33))" //the rest, sans gap
-"		COLORI(236, 233, 216);"
+"		CL(113, 111, 100);"
+"	EI(RX == 0 || RX == 34 || RX == 16 || RY == 20)" //buttons tl 0
+"		CL(255, 255, 255);"
+"	EI(RX == 48 || RX == 30 || RX == 14 || RY == 1)" //buttons br 0
+"		CL(172, 168, 153);"
+"	EI(RX == 1 || RX == 35 || RX == 17 || RY == 19)" //buttons tl 0
+"		CL(241, 239, 226);"
+"	EI(RX >= 4 && RX <= 9 && RY >= 7 && RY <= 8)" //min
+"		CL(0, 0, 0);"
+"	EI((RX == 18 || RX == 27) && RY >= 7 && RY <= 15)" //max sides
+"		CL(0, 0, 0);"
+"	EI(RX >= 19 && RX <= 26 && (RY == 7 || RY == 14 || RY == 15))" //max top bottom
+"		CL(0, 0, 0);"
+"	EI(RX >= 38 && RX <= 45 && RY >= 7 && RY <= 14)" //x
+"		TX(XTex, vec2(RX-38,RY-7)/vec2(8,8));"
+"	EI(!(RX == 32 || RX == 33))" //the rest, sans gap
+"		CL(236, 233, 216);"
 "	else" //TODO button labels
 "		rv = false;"
 "	return rv;"
 "}"
 "void colorScrollBar(ivec2 rel_pos) {"
-"	if(RY >= 17 && RY <= CY-38-40)"
+"	if(RY >= 17 && RY <= CY-38-40)" //bar checkerboard
 "		if(fract(float(RX+RY)/2) == 0.5)"
-"			COLORI(236, 233, 216);"
+"			CL(236, 233, 216);"
 "		else"
-"			COLORI(255, 255, 255);"
-"	else if(RX == 16 || RY == 0 || RY == CY-38-17 || RY == CY-38-39)"
-"		COLORI(113, 111, 100);"
-"	else if(RX == 0 || RY == 16 || RY == CY-38-1 || RY == CY-38-18)"
-"		COLORI(241, 239, 226);"
-"	else if(RX == 15 || RY == 1 || RY == CY-38-16 || RY == CY-38-38)"
-"		COLORI(172, 168, 153);"
-"	else if(RX == 1 || RY == 15 || RY == CY-38-2 || RY == CY-38-19)"
-"		COLORI(255, 255, 255);"
-"	else if(RX >= 5 && RX <= 12 && RY >= 6 && RY <= 9)"
-"		gl_FragColor = texture2D(ArrowTex, (vec2(rel_pos)-vec2(5,6))/vec2(8,4));"
-"	else if(RX >= 5 && RX <= 12 && RY >= CY-38-10 && RY <= CY-38-7)"
-"		gl_FragColor = texture2D(ArrowTex, (vec2(rel_pos)-vec2(5,CY-38-11))/vec2(8,-4)+vec2(0,1));"
+"			CL(255, 255, 255);"
+"	EI(RX == 16 || RY == 0 || RY == CY-38-17 || RY == CY-38-39)" //br0
+"		CL(113, 111, 100);"
+"	EI(RX == 0 || RY == 16 || RY == CY-38-1 || RY == CY-38-18)" //tl0
+"		CL(241, 239, 226);"
+"	EI(RX == 15 || RY == 1 || RY == CY-38-16 || RY == CY-38-38)" //br1
+"		CL(172, 168, 153);"
+"	EI(RX == 1 || RY == 15 || RY == CY-38-2 || RY == CY-38-19)" //tl1
+"		CL(255, 255, 255);"
+"	EI(RX >= 5 && RX <= 12 && RY >= 6 && RY <= 9)" //down arrow
+"		TX(ArrowTex, vec2(RX-5,RY-6)/vec2(8,4));"
+"	EI(RX >= 5 && RX <= 12 && RY >= CY-38-10 && RY <= CY-38-7)" //up arrow
+"		TX(ArrowTex, vec2(RX-5,CY-49-RY)/vec2(8,4));"
 "	else"
-"		COLORI(236, 233, 216);"
+"		CL(236, 233, 216);" //scroll block and arrow block filler
 "}"
 "void main() {"
 "	ivec2 rel_pos = ivec2(gl_FragCoord.xy) - cmd_pos;"
 /* outer border */
 "	if(RX == CX-1 || RY == 0)" //bottom right 0
-"		COLORI(113, 111, 100);"
-"	else if(RX == 0 || RY == CY-1)" //top left 0
-"		COLORI(241, 239, 226);"
-"	else if(RX == CX-2 || RY == 1)" //bottom right 1
-"		COLORI(172, 168, 153);"
-"	else if(RX == 1 || RY == CY-2)" //top left 1
-"		COLORI(255, 255, 255);"
-"	else if(RX == CX-3 || RY == 2 ||"
+"		CL(113, 111, 100);"
+"	EI(RX == 0 || RY == CY-1)" //top left 0
+"		CL(241, 239, 226);"
+"	EI(RX == CX-2 || RY == 1)" //bottom right 1
+"		CL(172, 168, 153);"
+"	EI(RX == 1 || RY == CY-2)" //top left 1
+"		CL(255, 255, 255);"
+"	EI(RX == CX-3 || RY == 2 ||"
 "			RX == 2 || RY == CY-3)" //bltr 2
-"		COLORI(212, 208, 200);"
-"	else if(RX == CX-4 || RY == 3 ||"
+"		CL(212, 208, 200);"
+"	EI(RX == CX-4 || RY == 3 ||"
 "			RX == 3 || RY == CY-4 || RY == CY-30)" //bltr 3, below titlebar
-"		COLORI(236, 233, 216);"
+"		CL(236, 233, 216);"
 /* title bar */
-"	else if(RY >= CY-27 && RY <= CY-7 &&"
+"	EI(RY >= CY-27 && RY <= CY-7 &&"
 "			((RX >= CX-56 && RX <= CX-25) ||"
 "			(RX >= CX-22 && RX <= CX-7)) &&"
 "			colorButtons(rel_pos-cmd_size+ivec2(56, 27)));"
-"	else if(RY >= CY-29 && RY <= CY-5) {"
+"	EI(RY >= CY-29 && RY <= CY-5) {"
 "		if(RX >= 4 && RX <= 37)"
-"			/*COLORI(0, 84, 227);*/"
-"			gl_FragColor = texture2D(IconTex, vec2(RX-3, 26 - (RY-(CY-5)))/vec2(34, 25));"
-"		else if(RX >= CX-58 && RX <= CX-5)"
-"			COLORI(61, 149, 255);"
+"			/*CL(0, 84, 227);*/"
+"			TX(IconTex, vec2(RX-3,CY+21-RY)/vec2(34, 25));"
+"		EI(RX >= CX-58 && RX <= CX-5)" //button area filler
+"			CL(61, 149, 255);"
 "		else {"
 "			float p = float(RX-37)/float(CX-58-37);"
 "			gl_FragColor = mix(vec4(0, 84/256.0, 227/256.0, 1),"
-"				vec4(61/256.0, 149/256.0, 255/256.0, 1), vec4(p,p,p,p));"
+"				vec4(61/256.0, 149/256.0, 255/256.0, 1), vec4(p));"
 "		}"
 "	}"
 /* inner border */
-"	else if(RX == CX-5 || RY == 4)" //br 4
-"		COLORI(255, 255, 255);"
-"	else if(RX == 4 || RY == CY-31)" //tl 4, top shifted below titlebar
-"		COLORI(172, 168, 153);"
-"	else if(RX == CX-6 || RY == 5)" //br 5
-"		COLORI(241, 239, 226);"
-"	else if(RX == 5 || RY == CY-32)" //tl 5, top shifted below titlebar
-"		COLORI(113, 111, 110);"
+"	EI(RX == CX-5 || RY == 4)" //br 4
+"		CL(255, 255, 255);"
+"	EI(RX == 4 || RY == CY-31)" //tl 4, top shifted below titlebar
+"		CL(172, 168, 153);"
+"	EI(RX == CX-6 || RY == 5)" //br 5
+"		CL(241, 239, 226);"
+"	EI(RX == 5 || RY == CY-32)" //tl 5, top shifted below titlebar
+"		CL(113, 111, 110);"
 /* scroll bar */
-"	else if(RX >= CX-23)"
+"	EI(RX >= CX-23)"
 "		colorScrollBar(rel_pos-ivec2(CX-23, 6));"
 /* text area */
-"	else if(RX >= 0 && RX <= CX-1 && RY >= 0 && RY <= CY-1)"
-"		COLORI(0, 0, 0);"
+"	EI(RX >= 0 && RX <= CX-1 && RY >= 0 && RY <= CY-1)"
+"		CL(0, 0, 0);"
 /* everything else, there should not be anything else, account for it somehow! */
 "	else"
-"		gl_FragColor = vec4(1, 0, 0, 1);"
+"		CL(255, 0, 0);"
 "}"
 ;
