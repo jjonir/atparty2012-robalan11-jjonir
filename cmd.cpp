@@ -191,24 +191,18 @@ const char *cmd_fshad =
 "		CL(172, 168, 153);"
 "	EI(RX == 1 || RY == CY-2)" //top left 1
 "		CL(255, 255, 255);"
-"	EI(RX == CX-3 || RY == 2 ||"
-"			RX == 2 || RY == CY-3)" //bltr 2
+"	EI(RX == CX-3 || RY == 2 || RX == 2 || RY == CY-3)" //bltr 2
 "		CL(212, 208, 200);"
-"	EI(RX == CX-4 || RY == 3 ||"
-"			RX == 3 || RY == CY-4 || RY == CY-30)" //bltr 3, below titlebar
+"	EI(RX == CX-4 || RY == 3 || RX == 3 || RY == CY-4 || RY == CY-30)" //bltr 3, below titlebar
 "		CL(236, 233, 216);"
 /* title bar */
-"	EI(RY >= CY-27 && RY <= CY-7 &&"
-"			((RX >= CX-56 && RX <= CX-25) ||"
-"			(RX >= CX-22 && RX <= CX-7)) &&"
-"			colorButtons(rel_pos-cmd_size+ivec2(56, 27)));"
-"	EI(RY >= CY-29 && RY <= CY-5) {"
-"		if(RX >= 4 && RX <= 37)"
-"			/*CL(0, 84, 227);*/"
-"			TX(IconTex, vec2(RX-3,CY+21-RY)/vec2(34, 25));"
-"		EI(RX >= CX-58 && RX <= CX-5)" //button area filler
-"			CL(61, 149, 255);"
-"		else {"
+"	EI(RY >= CY-27 && RY <= CY-7 && ((RX >= CX-56 && RX <= CX-25) ||"
+"	                                 (RX >= CX-22 && RX <= CX-7)))"
+"		colorButtons(rel_pos-cmd_size+ivec2(56, 27));"
+"	EI(RY >= CY-29) {"
+"		if(RX >= 9 && RX <= 24 && RY >= CY-24 && RY <= CY-11)" //icon
+"			TX(IconTex, vec2(RX-10,CY-RY-24)/vec2(15, 13));" //should be 16,14?!
+"		else {" //title bar gradient (TODO text)
 "			float p = float(RX-37)/float(CX-58-37);"
 "			gl_FragColor = mix(vec4(0, 84/256.0, 227/256.0, 1),"
 "				vec4(61/256.0, 149/256.0, 255/256.0, 1), vec4(p));"
@@ -228,7 +222,7 @@ const char *cmd_fshad =
 "		colorScrollBar(rel_pos-ivec2(CX-23, 6));"
 /* text area */
 "	EI(RX >= 0 && RX <= CX-1 && RY >= 0 && RY <= CY-1)"
-"		CL(0, 0, 0);"
+"		CL(0, 0, 0);" //or... discard?
 /* everything else, there should not be anything else, account for it somehow! */
 "	else"
 "		CL(255, 0, 0);"
