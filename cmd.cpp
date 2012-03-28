@@ -3,15 +3,13 @@
 #include <math.h>
 #include "shaders.h"
 #include "cmd_icon.h"
+#include "cmd_textures.h"
 
 // TODO everything's shifted up by 1 pixel (MinGW, I don't think it was on native gcc)
 // fix this
 
 GLuint cmd_program;
 GLuint textures[3];
-
-// the Linux kernel does it, so I don't see why I can't #include source files.
-#include "cmd_textures.cpp"
 
 void cmd_init(void)
 {

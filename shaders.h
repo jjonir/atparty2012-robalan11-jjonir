@@ -1,5 +1,4 @@
-#ifndef _SHADERS_H
-#define _SHADERS_H
+#pragma once
 
 #include <GL/gl.h>
 
@@ -23,5 +22,3 @@ void tunnel_animate(int val);
 void cmd_init(void);
 void cmd_render(void);
 void cmd_animate(int val);
-
-#endif

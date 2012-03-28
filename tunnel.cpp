@@ -35,7 +35,7 @@ void tunnel_init(void)
 #define RIGHT_BORDER 23
 #define BOTTOM_BORDER 8
 
-extern GLint textures[3];
+extern GLuint textures[3];
 
 void tunnel_render(void)
 {
