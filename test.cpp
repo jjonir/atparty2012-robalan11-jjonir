@@ -31,15 +31,13 @@ int main(int argc, char *argv[])
 	tunnel_init();
 	cmd_init();
 
-	glUseProgram(cmd_program);
-
 	t0 = glutGet(GLUT_ELAPSED_TIME);
 
-	glutDisplayFunc(tunnel_render);
-	glutTimerFunc(10, tunnel_animate, 0);
+	glutDisplayFunc(plasma_render);
+	glutTimerFunc(10, plasma_animate, 0);
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(key);
-	//glutFullScreen();
+	glutFullScreen();
 	glutMainLoop();
 
 	return 0;

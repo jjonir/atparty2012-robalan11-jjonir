@@ -2,6 +2,13 @@
 
 #include <GL/gl.h>
 
+#define CONSOLE_PIXELS_W 640.0
+#define CONSOLE_PIXELS_H 350.0
+#define TOP_BORDER 32.0
+#define LEFT_BORDER 6.0
+#define RIGHT_BORDER 23.0
+#define BOTTOM_BORDER 6.0
+
 extern const char *plasma_vshad, *plasma_fshad;
 extern const char *tunnel_vshad, *tunnel_fshad;
 extern const char *cmd_vshad, *cmd_fshad;
@@ -23,5 +30,5 @@ void tunnel_render(void);
 void tunnel_animate(int val);
 
 void cmd_init(void);
-void cmd_render(void);
+void cmd_render(float windowW, float windowH, float consoleX, float consoleY, float consoleW, float consoleH);
 void cmd_animate(int val);

@@ -23,8 +23,8 @@ void plasma_render(void)
 
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-	float consoleX = 0.5 + 0.2*sin(6.28*(float)glutGet(GLUT_ELAPSED_TIME)/1000);
-	float consoleY = 0.5 + 0.2*cos(6.28*(float)glutGet(GLUT_ELAPSED_TIME)/1000);
+	float consoleX = 0.5 + 0.2*sin((float)glutGet(GLUT_ELAPSED_TIME)/1000);
+	float consoleY = 0.5 + 0.2*cos((float)glutGet(GLUT_ELAPSED_TIME)/1000);
 
 	// Clamp console to character borders
 	consoleX = (floor(consoleX * windowW / char_w) * char_w) / windowW;
@@ -32,6 +32,10 @@ void plasma_render(void)
 	// Should be 640x350
 	float consoleW = 640.0/windowW;
 	float consoleH = 350.0/windowH;
+
+	cmd_render(windowW, windowH, consoleX, consoleY, consoleW, consoleH);
+
+	glUseProgram(plasma_program);
 
 	glBegin(GL_QUADS);
 		glVertex3f(consoleX-consoleW/2, consoleY-consoleH/2, -1);

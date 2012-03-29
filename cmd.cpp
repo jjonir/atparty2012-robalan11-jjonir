@@ -3,9 +3,6 @@
 #include <math.h>
 #include "shaders.h"
 
-// TODO everything's shifted up by 1 pixel (MinGW, I don't think it was on native gcc)
-// fix this
-
 GLuint cmd_program;
 
 void cmd_init(void)
@@ -17,48 +14,46 @@ void cmd_init(void)
 	glDeleteShader(fshad);
 }
 
-void cmd_render(void)
+void cmd_render(float windowW, float windowH, float consoleX, float consoleY, float consoleW, float consoleH)
 {
-	float windowW = glutGet(GLUT_WINDOW_WIDTH);
-	float windowH = glutGet(GLUT_WINDOW_HEIGHT);
-
-	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-	float consoleX = 0.5;
-	float consoleY = 0.5;
-
-	float consoleW = 668.0/windowW;
-	float consoleH = 337.0/windowH;
-
+	glUseProgram(cmd_program);
+	//render the cmd window
 	GLint var;
 	var = glGetUniformLocation(cmd_program, "cmd_pos");
-	glUniform2i(var, 0.5*windowW-668/2, 0.5*windowH-337/2);
+	glUniform2i(var,
+				consoleX*windowW-CONSOLE_PIXELS_W/2-LEFT_BORDER,
+				consoleY*windowH-CONSOLE_PIXELS_H/2-BOTTOM_BORDER);
 	var = glGetUniformLocation(cmd_program, "cmd_size");
-	glUniform2i(var, 668, 337);
+	glUniform2i(var, CONSOLE_PIXELS_W+LEFT_BORDER+RIGHT_BORDER,
+						CONSOLE_PIXELS_H+BOTTOM_BORDER+TOP_BORDER);
 
 	var = glGetUniformLocation(cmd_program, "IconTex");
 	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	glUniform1i(var, 0);
 
 	var = glGetUniformLocation(cmd_program, "XTex");
-	glActiveTexture(GL_TEXTURE8);
+	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, textures[1]);
-	glUniform1i(var, 8);
+	glUniform1i(var, 4);
 
 	var = glGetUniformLocation(cmd_program, "ArrowTex");
-	glActiveTexture(GL_TEXTURE16);
+	glActiveTexture(GL_TEXTURE8);
 	glBindTexture(GL_TEXTURE_2D, textures[2]);
-	glUniform1i(var, 16);
+	glUniform1i(var, 8);
 
 	glBegin(GL_QUADS);
-		glVertex3f(consoleX-consoleW/2, consoleY-consoleH/2, -1);
-		glVertex3f(consoleX+consoleW/2, consoleY-consoleH/2, -1);
-		glVertex3f(consoleX+consoleW/2, consoleY+consoleH/2, -1);
-		glVertex3f(consoleX-consoleW/2, consoleY+consoleH/2, -1);
+		glVertex3f((consoleX-LEFT_BORDER/windowW)-consoleW/2,
+					(consoleY-BOTTOM_BORDER/windowH)-consoleH/2, -1);
+		glVertex3f((consoleX+RIGHT_BORDER/windowW)+consoleW/2,
+					(consoleY-BOTTOM_BORDER/windowH)-consoleH/2, -1);
+		glVertex3f((consoleX+RIGHT_BORDER/windowW)+consoleW/2,
+					(consoleY+TOP_BORDER/windowH)+consoleH/2, -1);
+		glVertex3f((consoleX-LEFT_BORDER/windowW)-consoleW/2,
+					(consoleY+TOP_BORDER/windowH)+consoleH/2, -1);
+		//make sure they're right, consoleW/H/X/Y are different
 	glEnd();
-
-	glutSwapBuffers();
 }
 
 void cmd_animate(int val)
