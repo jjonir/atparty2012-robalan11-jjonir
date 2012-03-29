@@ -2,14 +2,11 @@
 #include <GL/glut.h>
 #include <math.h>
 #include "shaders.h"
-#include "cmd_icon.h"
-#include "cmd_textures.h"
 
 // TODO everything's shifted up by 1 pixel (MinGW, I don't think it was on native gcc)
 // fix this
 
 GLuint cmd_program;
-GLuint textures[3];
 
 void cmd_init(void)
 {
@@ -18,49 +15,6 @@ void cmd_init(void)
 	cmd_program = buildProgram(vshad, fshad, "cmd");
 	glDeleteShader(vshad);
 	glDeleteShader(fshad);
-
-	glGenTextures(3, textures);
-
-	glBindTexture(GL_TEXTURE_2D, textures[0]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, icon_image.width,
-			icon_image.height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-			(GLubyte *)icon_image.pixel_data);
-
-	GLubyte xTexData[8*8*4];
-	for(int i = 0; i < 8*8; i++) {
-		bool dat = x_bitmap[i>>3]&(1<<(i&7));
-		xTexData[i<<2] = dat?0:236;
-		xTexData[(i<<2)+1] = dat?0:233;
-		xTexData[(i<<2)+2] = dat?0:216;
-		xTexData[(i<<2)+3] = 255;
-	}
-	glBindTexture(GL_TEXTURE_2D, textures[1]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 8, 8, 0, GL_RGBA,
-			GL_UNSIGNED_BYTE, (GLubyte *)xTexData);
-
-	GLubyte upTexData[4*8*4];
-	for(int i = 0; i < 4*8; i++) {
-		bool dat = arrow_bitmap[i>>3]&(1<<(i&7));
-		upTexData[i<<2] = dat?0:236;
-		upTexData[(i<<2)+1] = dat?0:233;
-		upTexData[(i<<2)+2] = dat?0:216;
-		upTexData[(i<<2)+3] = 255;
-	}
-	glBindTexture(GL_TEXTURE_2D, textures[2]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 8, 4, 0, GL_RGBA,
-			GL_UNSIGNED_BYTE, (GLubyte *)upTexData);
 }
 
 void cmd_render(void)

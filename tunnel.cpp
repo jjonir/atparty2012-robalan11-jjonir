@@ -5,12 +5,6 @@
 
 GLuint tunnel_program;
 
-GLubyte tunnel_tex_data[] =
-"\255\255\255\255"
-"\255\0\0\255"
-"\0\255\0\255"
-"\0\0\255\255";
-
 void tunnel_init(void)
 {
 	GLuint vshad = buildShader(GL_VERTEX_SHADER, tunnel_vshad, "tunnel vertex");
@@ -18,14 +12,6 @@ void tunnel_init(void)
 	tunnel_program = buildProgram(vshad, fshad, "tunnel");
 	glDeleteShader(vshad);
 	glDeleteShader(fshad);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0,
-		GL_RGBA, GL_UNSIGNED_BYTE, (GLubyte *)tunnel_tex_data);
 }
 
 #define CONSOLE_PIXELS_W 640.0
@@ -66,18 +52,21 @@ void tunnel_render(void)
 
 	var = glGetUniformLocation(cmd_program, "IconTex");
 	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	glUniform1i(var, 0);
 
 	var = glGetUniformLocation(cmd_program, "XTex");
-	glActiveTexture(GL_TEXTURE8);
+	glActiveTexture(GL_TEXTURE4);
+	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textures[1]);
-	glUniform1i(var, 8);
+	glUniform1i(var, 4);
 
 	var = glGetUniformLocation(cmd_program, "ArrowTex");
-	glActiveTexture(GL_TEXTURE16);
+	glActiveTexture(GL_TEXTURE8);
+	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textures[2]);
-	glUniform1i(var, 16);
+	glUniform1i(var, 8);
 
 	glBegin(GL_QUADS);
 		glVertex3f((consoleX-LEFT_BORDER/windowW)-consoleW/2,
@@ -100,12 +89,12 @@ void tunnel_render(void)
 	glUniform1i(var, 0);
 	var = glGetUniformLocation(tunnel_program, "Move");
 	glUniform2f(var, (float)t/1000, (float)t/10000);
-	var = glGetUniformLocation(tunnel_program, "time");
-	glUniform1i(var, t);
-	GLint w_var = glGetUniformLocation(plasma_program, "width");
-	glUniform1i(w_var, glutGet(GLUT_WINDOW_WIDTH));
-	GLint h_var = glGetUniformLocation(plasma_program, "height");
-	glUniform1i(h_var, glutGet(GLUT_WINDOW_HEIGHT));
+	
+	var = glGetUniformLocation(tunnel_program, "Tex");
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, textures[3]);
+	glUniform1i(var, 0);
 
 	glBegin(GL_QUADS);
 		glVertex3f(consoleX-consoleW/2, consoleY-consoleH/2, -1);
@@ -135,33 +124,11 @@ const char *tunnel_fshad =
 "uniform vec2 Center;"
 "uniform sampler2D Tex;"
 "uniform vec2 Move;"
-"uniform int time;"
-"uniform int width;"
-"uniform int height;"
 "void main() {"
 "	vec2 v = gl_FragCoord.xy - Center;"
 "	float dist = length(v);"
 "	float angle = atan(v.y, v.x);"
-"	vec2 transformedCoord = vec2(10/dist, angle*2/3.1415)/*+Move*/;"
-"	/*gl_FragColor = mix(vec4(0), vec4(1,0,0,0), fract(100/dist+angle*2/3.14));*/"
-"	/*gl_FragColor = texture2D(Tex, transformedCoord);*/"
-"	float tx = transformedCoord.x*100;"
-"	float ty = transformedCoord.y*100;"
-// TODO if we want to wrap plasma texture around the tunnel, it must wrap! i.e. pl(x,0)==pl(x,2pi)
-"	float color = (sin(sqrt(pow(width/2-tx,2)+pow(height/2-ty,2))/50-time/300.0)+"
-"						sin((tx+ty)/30+time/230.0)+"
-"						sin(tx/37-time/600.0) + 1.5)/4.5;"
-"	if(color < 0.167)"
-"		gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);"
-"	else if(color < 0.333)"
-"		gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);"
-"	else if(color < 0.5)"
-"		gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);"
-"	else if(color < 0.667)"
-"		gl_FragColor = vec4(0.0, 1.0, 1.0, 1.0);"
-"	else if(color < 0.833)"
-"		gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);"
-"	else"
-"		gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);"
+"	vec2 transformedCoord = vec2(10/dist, angle*2/3.1415)+Move;"
+"	gl_FragColor = texture2D(Tex, transformedCoord);"
 "}"
 ;

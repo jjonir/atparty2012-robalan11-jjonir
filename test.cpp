@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
 	else
 		printf("glew not ok: %s\n", glewGetErrorString(err));
 
+	textures_init();
 	plasma_init();
 	tunnel_init();
 	cmd_init();
