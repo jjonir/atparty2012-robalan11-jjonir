@@ -49,8 +49,13 @@ void plasma_render(void)
 
 void plasma_animate(int val)
 {
-	glutTimerFunc(10, plasma_animate, 0);
 	int t = glutGet(GLUT_ELAPSED_TIME);
+	if(t < 20000)
+		glutTimerFunc(10, plasma_animate, 0);
+	else {
+		glutDisplayFunc(tunnel_render);
+		glutTimerFunc(10, tunnel_animate, 0);
+	}
 
 	if (t > 5000)  { char_w = 4; char_h = 7; }
 	if (t > 10000) { char_w = 3; char_h = 4; }

@@ -30,17 +30,17 @@ void cmd_render(float windowW, float windowH, float consoleX, float consoleY, fl
 	var = glGetUniformLocation(cmd_program, "IconTex");
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	glBindTexture(GL_TEXTURE_2D, textures[CMD_ICON_TEXTURE]);
 	glUniform1i(var, 0);
 
 	var = glGetUniformLocation(cmd_program, "XTex");
 	glActiveTexture(GL_TEXTURE4);
-	glBindTexture(GL_TEXTURE_2D, textures[1]);
+	glBindTexture(GL_TEXTURE_2D, textures[CMD_X_TEXTURE]);
 	glUniform1i(var, 4);
 
 	var = glGetUniformLocation(cmd_program, "ArrowTex");
 	glActiveTexture(GL_TEXTURE8);
-	glBindTexture(GL_TEXTURE_2D, textures[2]);
+	glBindTexture(GL_TEXTURE_2D, textures[CMD_ARROW_TEXTURE]);
 	glUniform1i(var, 8);
 
 	glBegin(GL_QUADS);

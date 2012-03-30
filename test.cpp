@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
 	else
 		printf("glew not ok: %s\n", glewGetErrorString(err));
 
+	grab_screen();
 	textures_init();
 	plasma_init();
 	tunnel_init();
@@ -33,8 +34,8 @@ int main(int argc, char *argv[])
 
 	t0 = glutGet(GLUT_ELAPSED_TIME);
 
-	glutDisplayFunc(plasma_render);
-	glutTimerFunc(10, plasma_animate, 0);
+	glutDisplayFunc(tunnel_render);
+	glutTimerFunc(10, tunnel_animate, 0);
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(key);
 	glutFullScreen();

@@ -9,6 +9,13 @@
 #define RIGHT_BORDER 23.0
 #define BOTTOM_BORDER 6.0
 
+#define DESKTOP_TEXTURE 0
+#define CMD_ICON_TEXTURE 1
+#define CMD_X_TEXTURE 2
+#define CMD_ARROW_TEXTURE 3
+#define TUNNEL_TEXTURE 4
+#define NUM_TEXTURES 5
+
 extern const char *plasma_vshad, *plasma_fshad;
 extern const char *tunnel_vshad, *tunnel_fshad;
 extern const char *cmd_vshad, *cmd_fshad;
@@ -19,6 +26,7 @@ extern GLuint plasma_program, tunnel_program, cmd_program;
 GLuint buildShader(GLenum type, const char *source, const char *name);
 GLuint buildProgram(GLuint vshad, GLuint fshad, const char *name);
 
+void grab_screen(void);
 void textures_init(void);
 
 void plasma_init(void);

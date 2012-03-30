@@ -1,17 +1,21 @@
+#include <windows.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <stdio.h>
+#include <string.h>
 #include "shaders.h"
 #include "cmd_textures.h"
+
+GLuint textures[NUM_TEXTURES];
+
+int desk_width, desk_height;
+GLubyte *desktop_tex_data;
 
 GLubyte tunnel_tex_data[] =
 "\255\255\255\255"
 "\255\0\0\255"
 "\0\255\0\255"
 "\0\0\255\255";
-
-#define NUM_TEXTURES 4
-GLuint textures[NUM_TEXTURES];
 
 /* Convenience fn for building a shader from source.
  * type must be GL_VERTEX_SHADER or GL_FRAGMENT_SHADER.
@@ -45,12 +49,41 @@ GLuint buildProgram(GLuint vshad, GLuint fshad, const char *name)
 	return handle;
 }
 
+void grab_screen()
+{
+	HDC screen_dc = GetDC(NULL);
+	desk_width = GetDeviceCaps(screen_dc, HORZRES);
+	desk_height = GetDeviceCaps(screen_dc, VERTRES);
+	HBITMAP bmp = CreateCompatibleBitmap(screen_dc, desk_width, desk_height);
+	HDC bmp_dc = CreateCompatibleDC(screen_dc);
+	SelectObject(bmp_dc, bmp);
+	BitBlt(bmp_dc, 0, 0, desk_width, desk_height, screen_dc, 0, 0, SRCCOPY);
+	//something
+	BITMAPINFO bi = {
+		{
+			x
+		},
+		x
+	};
+	GetDIBits(bmp_dc, bmp, 0, desk_height, desktop_texture_data,
+				bi, DIB_RGB_COLORS);
+}
+
 void textures_init()
 {
 	glGenTextures(NUM_TEXTURES, textures);
-	
+
+	/* Desktop Texture */
+	glBindTexture(GL_TEXTURE_2D, textures[DESKTOP_TEXTURE]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, desk_width, desk_height, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, desktop_tex_data);
+
 	/* CMD Icon Texture */
-	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	glBindTexture(GL_TEXTURE_2D, textures[CMD_ICON_TEXTURE]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -68,7 +101,7 @@ void textures_init()
 		xTexData[(i<<2)+2] = dat?0:216;
 		xTexData[(i<<2)+3] = 255;
 	}
-	glBindTexture(GL_TEXTURE_2D, textures[1]);
+	glBindTexture(GL_TEXTURE_2D, textures[CMD_X_TEXTURE]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -85,7 +118,7 @@ void textures_init()
 		upTexData[(i<<2)+2] = dat?0:216;
 		upTexData[(i<<2)+3] = 255;
 	}
-	glBindTexture(GL_TEXTURE_2D, textures[2]);
+	glBindTexture(GL_TEXTURE_2D, textures[CMD_ARROW_TEXTURE]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -93,7 +126,7 @@ void textures_init()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 8, 4, 0, GL_RGBA,
 			GL_UNSIGNED_BYTE, (GLubyte *)upTexData);
 	
-	glBindTexture(GL_TEXTURE_2D, textures[3]);
+	glBindTexture(GL_TEXTURE_2D, textures[TUNNEL_TEXTURE]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
