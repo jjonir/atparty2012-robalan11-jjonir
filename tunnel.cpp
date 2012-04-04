@@ -95,6 +95,10 @@ const char *tunnel_fshad =
 "	float dist = length(v);"
 "	float angle = atan(v.y, v.x);"
 "	vec2 transformedCoord = vec2(10/dist, angle*2/3.1415)+Move;"
-"	gl_FragColor = texture2D(Tex, transformedCoord);"
+"	if (dist < 20) {"
+"		gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);"
+"	} else {"
+"		gl_FragColor = texture2D(Tex, transformedCoord);"
+"	}"
 "}"
 ;
