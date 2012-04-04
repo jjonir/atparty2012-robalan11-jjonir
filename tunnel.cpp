@@ -21,8 +21,8 @@ void tunnel_render(void)
 	int t = glutGet(GLUT_ELAPSED_TIME);
 	float windowW = glutGet(GLUT_WINDOW_WIDTH);
 	float windowH = glutGet(GLUT_WINDOW_HEIGHT);
-	float consoleX = 0.5 + 0.2*sin((float)glutGet(GLUT_ELAPSED_TIME)/1000);
-	float consoleY = 0.5 + 0.2*cos((float)glutGet(GLUT_ELAPSED_TIME)/1000);
+	float consoleX = 0.5;// + 0.2*sin((float)glutGet(GLUT_ELAPSED_TIME)/1000);
+	float consoleY = 0.5;// + 0.2*cos((float)glutGet(GLUT_ELAPSED_TIME)/1000);
 	float consoleW = CONSOLE_PIXELS_W/windowW;
 	float consoleH = CONSOLE_PIXELS_H/windowH;
 	
@@ -58,7 +58,7 @@ void tunnel_render(void)
 void tunnel_animate(int val)
 {
 	int t = glutGet(GLUT_ELAPSED_TIME);
-	if(t < 3000)
+	if(t < 5000)
 		glutTimerFunc(10, tunnel_animate, 0);
 	else {
 		glutDisplayFunc(plasma_render);

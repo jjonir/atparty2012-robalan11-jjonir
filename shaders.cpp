@@ -59,14 +59,14 @@ void grab_screen()
 	SelectObject(bmp_dc, bmp);
 	BitBlt(bmp_dc, 0, 0, desk_width, desk_height, screen_dc, 0, 0, SRCCOPY);
 	//something
-	BITMAPINFO bi = {
+	/*BITMAPINFO bi = {
 		{
 			x
 		},
 		x
 	};
 	GetDIBits(bmp_dc, bmp, 0, desk_height, desktop_texture_data,
-				bi, DIB_RGB_COLORS);
+				bi, DIB_RGB_COLORS);*/
 }
 
 void textures_init()

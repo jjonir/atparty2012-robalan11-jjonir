@@ -22,9 +22,18 @@ void plasma_render(void)
 	float windowH = glutGet(GLUT_WINDOW_HEIGHT);
 
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	
+	float t = (float)glutGet(GLUT_ELAPSED_TIME);
+	float consoleX = 0.5;
+	float consoleY = 0.5;
 
-	float consoleX = 0.5 + 0.2*sin((float)glutGet(GLUT_ELAPSED_TIME)/1000);
-	float consoleY = 0.5 + 0.2*cos((float)glutGet(GLUT_ELAPSED_TIME)/1000);
+	if (t > 8000) {
+		float theta = t/2000 - 4;
+		float radius = 0.3*sin(3*theta);
+
+		consoleX = 0.5 + radius*sin(theta);
+		consoleY = 0.5 + radius*cos(theta);
+	}
 
 	// Clamp console to character borders
 	consoleX = (floor(consoleX * windowW / char_w) * char_w) / windowW;
