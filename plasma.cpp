@@ -6,7 +6,7 @@
 GLuint plasma_program;
 static int char_w = 8;
 static int char_h = 14;
-static int sharp = 100; // 100 is fully sharp, 0 is fully smooth
+static float sharp = 1; // 1 is fully sharp, 0 is fully smooth
 
 void plasma_init(void)
 {
@@ -60,17 +60,18 @@ void plasma_render(void)
 void plasma_animate(int val)
 {
 	int t = glutGet(GLUT_ELAPSED_TIME);
-	if(t < 20000)
+	//if(t < 20000)
 		glutTimerFunc(10, plasma_animate, 0);
-	else {
-		glutDisplayFunc(tunnel_render);
-		glutTimerFunc(10, tunnel_animate, 0);
-	}
+	//else {
+	//	glutDisplayFunc(tunnel_render);
+	//	glutTimerFunc(10, tunnel_animate, 0);
+	//}
 
-	if (t > 5000)  { char_w = 4; char_h = 7; sharp = 0; }
-	if (t > 10000) { char_w = 3; char_h = 4; sharp = 0; }
-	if (t > 13000) { char_w = 2; char_h = 2; sharp = 0; }
-	if (t > 15000) { char_w = 1; char_h = 1; sharp = 0; }
+	if (t > 10000)  { char_w = 4; char_h = 7; sharp = 0; }
+	if (t > 15000) { char_w = 3; char_h = 4; sharp = 0; }
+	if (t > 18000) { char_w = 2; char_h = 2; sharp = 0; }
+	if (t > 20000) { char_w = 1; char_h = 1; sharp = 0; }
+	//sharp = 1.5 - t/100.0;
 
 	GLint w_var = glGetUniformLocation(plasma_program, "width");
 	glUniform1i(w_var, glutGet(GLUT_WINDOW_WIDTH));
@@ -83,7 +84,7 @@ void plasma_animate(int val)
 	GLint char_h_var = glGetUniformLocation(plasma_program, "char_h");
 	glUniform1i(char_h_var, char_h);
 	GLint sharp_var = glGetUniformLocation(plasma_program, "sharp");
-	glUniform1i(sharp_var, sharp);
+	glUniform1f(sharp_var, sharp);
 
 	glutPostRedisplay();
 }
@@ -102,18 +103,21 @@ const char *plasma_fshad =
 "uniform int time;"
 "uniform int char_w;"
 "uniform int char_h;"
-"uniform int sharp;"
+"uniform float sharp;"
 "void main() {"
 "	float xchar = floor(gl_FragCoord.x/char_w)*char_w;"
 "	float ychar = floor(gl_FragCoord.y/char_h)*char_h;"
-"	float color = (sin(sqrt(pow(width/2-xchar,2)+pow(height/2-ychar,2))/50-time/300.0)+"
-"						sin((xchar+ychar)/30+time/230.0)+"
-"						sin(xchar/37-time/600.0) + 1.5)/4.5;"
+"	float color = ( sin(sqrt(pow(width/2-xchar,2)+pow(height/2-ychar,2))/50-time/300.0)+"
+"					sin((xchar+ychar)/30+time/230.0)+"
+"					sin(xchar/37-time/600.0) + 1.5)/4.5;"
 "	color = clamp(color, 0.0, 1.0);"
-"	float fade = sharp / 100.0;"
-"	float red = color > 0.833 || color < 0.333 ? clamp(2.0 - min(abs(6*color-0.5), abs(6*(color-1.0)-0.5)) + fade, 0.0, 1.0) : 0.0;"
-"	float green = color > 0.167 && color < 0.667 ? clamp(2.0 - abs(6*color-2.5) + fade, 0.0, 1.0) : 0.0;"
-"	float blue = color > 0.5 && color <= 1.0 ? clamp(2.0 - abs(6*color-4.5) + fade, 0.0, 1.0) : 0.0;"
+"	float fade = sharp;"
+"	float red = clamp(2.0 - min(abs(6*color-0.5), abs(6*(color-1.0)-0.5)) + fade/2, 0.0, 1.0);"
+"	float green = clamp(2.0 - abs(6*color-2.5) + fade/2, 0.0, 1.0);"
+"	float blue = clamp(2.0 - abs(6*color-4.5) + fade/2, 0.0, 1.0);"
+"	red = red < fade ? 0 : red;"
+"	green = green < fade ? 0 : green;"
+"	blue = blue < fade ? 0 : blue;"
 "	gl_FragColor = vec4(red, green, blue, 1.0);"
 "}"
 ;

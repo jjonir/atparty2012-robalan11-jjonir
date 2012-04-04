@@ -126,6 +126,7 @@ void textures_init()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 8, 4, 0, GL_RGBA,
 			GL_UNSIGNED_BYTE, (GLubyte *)upTexData);
 	
+	/* Tunnel Texture */
 	glBindTexture(GL_TEXTURE_2D, textures[TUNNEL_TEXTURE]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
