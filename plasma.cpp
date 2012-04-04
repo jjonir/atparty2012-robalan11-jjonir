@@ -6,6 +6,7 @@
 GLuint plasma_program;
 static int char_w = 8;
 static int char_h = 14;
+static int sharp = 100; // 100 is fully sharp, 0 is fully smooth
 
 void plasma_init(void)
 {
@@ -66,10 +67,10 @@ void plasma_animate(int val)
 		glutTimerFunc(10, tunnel_animate, 0);
 	}
 
-	if (t > 5000)  { char_w = 4; char_h = 7; }
-	if (t > 10000) { char_w = 3; char_h = 4; }
-	if (t > 13000) { char_w = 2; char_h = 2; }
-	if (t > 15000) { char_w = 1; char_h = 1; }
+	if (t > 5000)  { char_w = 4; char_h = 7; sharp = 0; }
+	if (t > 10000) { char_w = 3; char_h = 4; sharp = 0; }
+	if (t > 13000) { char_w = 2; char_h = 2; sharp = 0; }
+	if (t > 15000) { char_w = 1; char_h = 1; sharp = 0; }
 
 	GLint w_var = glGetUniformLocation(plasma_program, "width");
 	glUniform1i(w_var, glutGet(GLUT_WINDOW_WIDTH));
@@ -81,6 +82,8 @@ void plasma_animate(int val)
 	glUniform1i(char_w_var, char_w);
 	GLint char_h_var = glGetUniformLocation(plasma_program, "char_h");
 	glUniform1i(char_h_var, char_h);
+	GLint sharp_var = glGetUniformLocation(plasma_program, "sharp");
+	glUniform1i(sharp_var, sharp);
 
 	glutPostRedisplay();
 }
@@ -99,15 +102,17 @@ const char *plasma_fshad =
 "uniform int time;"
 "uniform int char_w;"
 "uniform int char_h;"
+"uniform int sharp;"
 "void main() {"
 "	float xchar = floor(gl_FragCoord.x/char_w)*char_w;"
 "	float ychar = floor(gl_FragCoord.y/char_h)*char_h;"
 "	float color = (sin(sqrt(pow(width/2-xchar,2)+pow(height/2-ychar,2))/50-time/300.0)+"
 "						sin((xchar+ychar)/30+time/230.0)+"
 "						sin(xchar/37-time/600.0) + 1.5)/4.5;"
-"	float red = color < 0.333 || color > 0.833 ? 1.0 : 0.0;"
-"	float green = color > 0.167 && color < 0.667 ? 1.0 : 0.0;"
-"	float blue = color > 0.5 ? 1.0 : 0.0;"
+"	float fade = sharp / 100.0;"
+"	float red = color < 0.167 ? 1.0 : color < 0.333 ? clamp(2.0 - abs(6*color-0.5) + fade, 0.0, 1.0) : color - 1.0 > -0.167 ? clamp(2.0 - abs(6*(color-1.0)-0.5) + fade, 0.0, 1.0) : 0.0;"
+"	float green = color > 0.333 && color < 0.5 ? 1.0 : color > 0.167 && color < 0.667 ? clamp(2.0 - abs(6*color-2.5) + fade, 0.0, 1.0) : 0.0;"
+"	float blue = color > 0.667 && color <= 0.833 ? 1.0 : color > 0.5 && color <= 1.0 ? clamp(2.0 - abs(6*color-4.5) + fade, 0.0, 1.0) : 0.0;"
 "	gl_FragColor = vec4(red, green, blue, 1.0);"
 "}"
 ;
