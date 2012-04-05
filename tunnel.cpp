@@ -26,6 +26,10 @@ void tunnel_render(void)
 	float consoleW = CONSOLE_PIXELS_W/windowW;
 	float consoleH = CONSOLE_PIXELS_H/windowH;
 	
+	// Clamp console to character borders
+	consoleX = (floor(consoleX * windowW / 8) * 8) / windowW; // hard-coding char_w as 8
+	consoleY = (floor(consoleY * windowH / 14) * 14 + 14/2) / windowH; // hard-coding char_h as 14
+
 	cmd_render(windowW, windowH, consoleX, consoleY, consoleW, consoleH);
 
 	glUseProgram(tunnel_program);

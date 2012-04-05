@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <math.h>
+#include <stdio.h>
 #include "shaders.h"
 
 GLuint plasma_program;
@@ -67,12 +68,11 @@ void plasma_animate(int val)
 	//	glutTimerFunc(10, tunnel_animate, 0);
 	//}
 
-	if (t > 10000)  { char_w = 4; char_h = 7; sharp = 0; }
-	if (t > 15000) { char_w = 3; char_h = 4; sharp = 0; }
-	if (t > 18000) { char_w = 2; char_h = 2; sharp = 0; }
-	if (t > 20000) { char_w = 1; char_h = 1; sharp = 0; }
-	//sharp = 1.5 - t/100.0;
-
+	if (t > 10000)  { char_w = 4; char_h = 7; sharp = 1.0f; }
+	if (t > 15000) { char_w = 3; char_h = 4; sharp = 1.0f; }
+	if (t > 18000) { char_w = 2; char_h = 2; sharp = 7.0 - t/3000.0; }
+	if (t > 20000) { char_w = 1; char_h = 1; sharp = 7.0 - t/3000.0; }
+	
 	GLint w_var = glGetUniformLocation(plasma_program, "width");
 	glUniform1i(w_var, glutGet(GLUT_WINDOW_WIDTH));
 	GLint h_var = glGetUniformLocation(plasma_program, "height");
