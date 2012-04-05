@@ -26,6 +26,8 @@ void cmd_render(float windowW, float windowH, float consoleX, float consoleY, fl
 	var = glGetUniformLocation(cmd_program, "cmd_size");
 	glUniform2i(var, CONSOLE_PIXELS_W+LEFT_BORDER+RIGHT_BORDER,
 						CONSOLE_PIXELS_H+BOTTOM_BORDER+TOP_BORDER);
+	var = glGetUniformLocation(cmd_program, "desk_size");
+	glUniform2i(var, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
 
 	var = glGetUniformLocation(cmd_program, "IconTex");
 	glActiveTexture(GL_TEXTURE0);
@@ -43,16 +45,16 @@ void cmd_render(float windowW, float windowH, float consoleX, float consoleY, fl
 	glBindTexture(GL_TEXTURE_2D, textures[CMD_ARROW_TEXTURE]);
 	glUniform1i(var, 8);
 
+	var = glGetUniformLocation(cmd_program, "DeskTex");
+	glActiveTexture(GL_TEXTURE12);
+	glBindTexture(GL_TEXTURE_2D, textures[DESKTOP_TEXTURE]);
+	glUniform1i(var, 12);
+
 	glBegin(GL_QUADS);
-		glVertex3f((consoleX-LEFT_BORDER/windowW)-consoleW/2,
-					(consoleY-BOTTOM_BORDER/windowH)-consoleH/2, -1);
-		glVertex3f((consoleX+RIGHT_BORDER/windowW)+consoleW/2,
-					(consoleY-BOTTOM_BORDER/windowH)-consoleH/2, -1);
-		glVertex3f((consoleX+RIGHT_BORDER/windowW)+consoleW/2,
-					(consoleY+TOP_BORDER/windowH)+consoleH/2, -1);
-		glVertex3f((consoleX-LEFT_BORDER/windowW)-consoleW/2,
-					(consoleY+TOP_BORDER/windowH)+consoleH/2, -1);
-		//make sure they're right, consoleW/H/X/Y are different
+		glVertex3f(-1,-1,-1);
+		glVertex3f(1,-1,-1);
+		glVertex3f(1,1,-1);
+		glVertex3f(-1,1,-1);
 	glEnd();
 }
 
@@ -81,7 +83,8 @@ const char *cmd_fshad =
 "#define EI else if\n"
 "uniform ivec2 cmd_pos;"
 "uniform ivec2 cmd_size;"
-"uniform sampler2D IconTex, XTex, ArrowTex;"
+"uniform ivec2 desk_size;"
+"uniform sampler2D IconTex, XTex, ArrowTex, DeskTex;"
 "bool colorButtons(ivec2 rel_pos) {"
 "	bool rv = true;"
 "	if(RX == 49 || RX == 31 || RX == 15 || RY == 0)" //buttons br 0
@@ -129,8 +132,11 @@ const char *cmd_fshad =
 "}"
 "void main() {"
 "	ivec2 rel_pos = ivec2(gl_FragCoord.xy) - cmd_pos;"
+/* desktop! */
+"	if(RX < 0 || RX >= CX || RY < 0 || RY >= CY)"
+"		gl_FragColor = texture2D(DeskTex, gl_FragCoord.xy/vec2(desk_size));"
 /* outer border */
-"	if(RX == CX-1 || RY == 0)" //bottom right 0
+"	EI(RX == CX-1 || RY == 0)" //bottom right 0
 "		CL(113, 111, 100);"
 "	EI(RX == 0 || RY == CY-1)" //top left 0
 "		CL(241, 239, 226);"
@@ -172,6 +178,6 @@ const char *cmd_fshad =
 "		CL(0, 0, 0);" //or... discard?
 /* everything else, there should not be anything else, account for it somehow! */
 "	else"
-"		CL(255, 0, 0);"
+"		CL(255,0,0);" // just in case... blood everywhere (else)!
 "}"
 ;

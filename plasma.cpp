@@ -24,7 +24,7 @@ void plasma_render(void)
 
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
-	float t = (float)glutGet(GLUT_ELAPSED_TIME);
+	float t = demo_get_time();
 	float consoleX = 0.5;
 	float consoleY = 0.5;
 
@@ -59,7 +59,7 @@ void plasma_render(void)
 
 void plasma_animate(int val)
 {
-	int t = glutGet(GLUT_ELAPSED_TIME);
+	int t = demo_get_time();
 	//if(t < 20000)
 		glutTimerFunc(10, plasma_animate, 0);
 	//else {

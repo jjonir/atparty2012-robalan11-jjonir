@@ -9,8 +9,6 @@ void checkVersions(void);
 void key(unsigned char key, int x, int y);
 void reshape(int w, int h);
 
-int t0;
-
 int main(int argc, char *argv[])
 {
 	glutInit(&argc, argv);
@@ -32,7 +30,7 @@ int main(int argc, char *argv[])
 	tunnel_init();
 	cmd_init();
 
-	t0 = glutGet(GLUT_ELAPSED_TIME);
+	t0 = demo_get_time();
 
 	glutDisplayFunc(tunnel_render);
 	glutTimerFunc(10, tunnel_animate, 0);

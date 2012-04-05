@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gl\glew.h>
+#include <GL/glew.h>
 
 /* button 1-bit bitmaps */
 GLubyte x_bitmap[8] = {0xC3,0xE7,0x7E,0x3C,0x3C,0x7E,0xE7,0xC3};

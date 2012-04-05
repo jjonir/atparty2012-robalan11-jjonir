@@ -1,6 +1,6 @@
 #include <windows.h>
 #include <GL/glew.h>
-#include <GL/gl.h>
+#include <GL/glut.h>
 #include <stdio.h>
 #include <string.h>
 #include "shaders.h"
@@ -16,6 +16,13 @@ GLubyte tunnel_tex_data[] =
 "\255\0\0\255"
 "\0\255\0\255"
 "\0\0\255\255";
+
+float t0;
+
+float demo_get_time(void) {
+	float t = (float)glutGet(GLUT_ELAPSED_TIME);
+	return t-t0;
+}
 
 /* Convenience fn for building a shader from source.
  * type must be GL_VERTEX_SHADER or GL_FRAGMENT_SHADER.
@@ -54,19 +61,23 @@ void grab_screen()
 	HDC screen_dc = GetDC(NULL);
 	desk_width = GetDeviceCaps(screen_dc, HORZRES);
 	desk_height = GetDeviceCaps(screen_dc, VERTRES);
+	desktop_tex_data = (GLubyte *)malloc(desk_height*desk_width*4*sizeof(GLubyte));
+
 	HBITMAP bmp = CreateCompatibleBitmap(screen_dc, desk_width, desk_height);
 	HDC bmp_dc = CreateCompatibleDC(screen_dc);
 	SelectObject(bmp_dc, bmp);
 	BitBlt(bmp_dc, 0, 0, desk_width, desk_height, screen_dc, 0, 0, SRCCOPY);
-	//something
-	/*BITMAPINFO bi = {
-		{
-			x
-		},
-		x
-	};
-	GetDIBits(bmp_dc, bmp, 0, desk_height, desktop_texture_data,
-				bi, DIB_RGB_COLORS);*/
+	
+	int i = 0;
+	for(int y = desk_height-1; y >= 0; y--) {
+		for(int x = 0; x < desk_width; x++) {
+			COLORREF c = GetPixel(bmp_dc, x, y);
+			desktop_tex_data[i++] = GetRValue(c);
+			desktop_tex_data[i++] = GetGValue(c);
+			desktop_tex_data[i++] = GetBValue(c);
+			desktop_tex_data[i++] = 255;
+		}
+	}
 }
 
 void textures_init()

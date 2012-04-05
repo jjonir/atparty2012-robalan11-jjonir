@@ -18,11 +18,11 @@ void tunnel_render(void)
 {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-	int t = glutGet(GLUT_ELAPSED_TIME);
+	int t = demo_get_time();
 	float windowW = glutGet(GLUT_WINDOW_WIDTH);
 	float windowH = glutGet(GLUT_WINDOW_HEIGHT);
-	float consoleX = 0.5;// + 0.2*sin((float)glutGet(GLUT_ELAPSED_TIME)/1000);
-	float consoleY = 0.5;// + 0.2*cos((float)glutGet(GLUT_ELAPSED_TIME)/1000);
+	float consoleX = 0.5;
+	float consoleY = 0.5;
 	float consoleW = CONSOLE_PIXELS_W/windowW;
 	float consoleH = CONSOLE_PIXELS_H/windowH;
 	
@@ -57,7 +57,7 @@ void tunnel_render(void)
 
 void tunnel_animate(int val)
 {
-	int t = glutGet(GLUT_ELAPSED_TIME);
+	int t = demo_get_time();
 	if(t < 5000)
 		glutTimerFunc(10, tunnel_animate, 0);
 	else {
