@@ -44,3 +44,7 @@ void tunnel_animate(int val);
 void cmd_init(void);
 void cmd_render(float windowW, float windowH, float consoleX, float consoleY, float consoleW, float consoleH);
 void cmd_animate(int val);
+
+void cube_init(void);
+void cube_render(void);
+void cube_animate(int val);

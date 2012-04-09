@@ -29,11 +29,14 @@ int main(int argc, char *argv[])
 	plasma_init();
 	tunnel_init();
 	cmd_init();
+	cube_init();
 
 	t0 = demo_get_time();
 
-	glutDisplayFunc(tunnel_render);
-	glutTimerFunc(10, tunnel_animate, 0);
+	//glutDisplayFunc(tunnel_render);
+	//glutTimerFunc(10, tunnel_animate, 0);
+	glutDisplayFunc(cube_render);
+	glutTimerFunc(10, cube_animate, 0);
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(key);
 	glutFullScreen();
@@ -55,7 +58,8 @@ void reshape(int w, int h)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glViewport(0, 0, w, h);
-	glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
+	//glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
+	gluPerspective(45.0f, (GLfloat)w/(GLfloat)h, 0.1f, 100.0f);
 	glMatrixMode(GL_MODELVIEW);
 }
 
