@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(1000, 700);
 	glutCreateWindow("test");
+	glutSetCursor(GLUT_CURSOR_NONE);
 	GLenum err = glewInit();
 
 	checkVersions();
@@ -58,8 +59,8 @@ void reshape(int w, int h)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glViewport(0, 0, w, h);
-	//glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
-	gluPerspective(45.0f, (GLfloat)w/(GLfloat)h, 0.1f, 100.0f);
+	glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
+	//gluPerspective(45.0f, (GLfloat)w/(GLfloat)h, 0.1f, 100.0f);
 	glMatrixMode(GL_MODELVIEW);
 }
 

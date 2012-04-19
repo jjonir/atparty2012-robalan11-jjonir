@@ -4,16 +4,15 @@
 #include <stdio.h>
 
 #include "shaders.h"
+#include "utils.h"
 
-struct point {
-	float x, y, z;
-};
+GLuint cube_program;
 
 class Cube {
 private:
-	point corners [8];
-	point position;
-	point rotation;
+	Point corners [8];
+	Point position;
+	Point rotation;
 public:
 	Cube() {
 		corners[0].x = corners[1].x = corners[2].x = corners[3].x = 0.0f; // plane x=0
@@ -27,8 +26,8 @@ public:
 		rotation.x = rotation.y = rotation.z = 0;
 	}
 
-	void drawFace(point c1, point c2, point c3, point c4) {
-		point a, b, N;
+	void drawFace(Point c1, Point c2, Point c3, Point c4) {
+		Point a, b, N;
 		a.x = c1.x - c2.x;
 		a.y = c1.y - c2.y;
 		a.z = c1.z - c2.z;
@@ -72,14 +71,37 @@ Cube cubes[10];
 void cube_init(void) {
 	cubes[0].setPos(1.0, 1.0, 0.0);
 	cubes[1].setPos(1.0, 0.0, 1.0);
+	GLuint vshad = buildShader(GL_VERTEX_SHADER, cube_vshad, "cube vertex");
+	GLuint fshad = buildShader(GL_FRAGMENT_SHADER, cube_fshad, "cube fragment");
+	cube_program = buildProgram(vshad, fshad, "cube");
+	glDeleteShader(vshad);
+	glDeleteShader(fshad);
 }
 
 void cube_render(void) {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 	int t = demo_get_time();
+
+	float camera_x = 3.0 * sin(t/3000.0);
+	float camera_y = 1.0;
+	float camera_z = 3.0 * cos(t/3000.0);
+
+	glUseProgram(cube_program);
+	GLint t_var = glGetUniformLocation(cube_program, "time");
+	glUniform1i(t_var, t);
+	//float spheres[4*2] = {0.0, 0.0, 0.0, 0.5, 2.0, 2.0, 2.0, 0.75};
+	float position[3] = {camera_x, camera_y, camera_z};
+	glUniform3fv(glGetUniformLocation(cube_program, "rO"), 1, position);
+
+	glBegin(GL_QUADS);
+		glVertex3f(-1.0f, -1.0f, -1);
+		glVertex3f(1.0f, -1.0f, -1);
+		glVertex3f(1.0f, 1.0f, -1);
+		glVertex3f(-1.0f, 1.0f, -1);
+	glEnd();
 	
-	glEnable(GL_LIGHTING);
+	/*glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH_TEST);
 	GLfloat ambient[]  = {0.2f, 0.0f, 0.0f, 1.0f};
 	GLfloat specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -89,11 +111,11 @@ void cube_render(void) {
 	glLightfv(GL_LIGHT0, GL_POSITION, position);
 	glEnable(GL_LIGHT0);
 	glLoadIdentity();
-	gluLookAt(10.0 * sin(t/1000.0), 3.0, 10.0 * cos(t/1000.0), 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	gluLookAt(camera_x, camera_y, camera_z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
 	for (int i = 0; i < 10; i++) {
 		cubes[i].draw();
-	}
+	}*/
 
 	glutSwapBuffers();
 }
@@ -102,3 +124,86 @@ void cube_animate(int val) {
 	glutTimerFunc(10, cube_animate, 0);
 	glutPostRedisplay();
 }
+
+const char *cube_vshad =
+"#version 120\n"
+"uniform vec3 rO;"
+"void main(void)"
+"{"
+    "gl_Position=gl_Vertex;"
+	"vec3 d=normalize(vec3(0.0,0.0,0.0)-rO);"
+    "vec3 r=normalize(cross(d,vec3(0.0,1.0,0.0)));"
+    "vec3 u=cross(r,d);"
+    "vec3 e=vec3(gl_Vertex.x*1.778,gl_Vertex.y,.75);"   //    eye space ray
+    "gl_TexCoord[0].xyz=mat3(r,u,d)*e;"                 //  world space ray
+    "gl_TexCoord[1]=vec4(.5)+gl_Vertex*.5;"             // screen space coordinate
+"}";
+;
+
+const char *cube_fshad =
+"#version 120\n"
+"uniform int time;"
+"uniform vec3 rO;"
+"float intSph(in vec3 rS, in vec3 rD, in vec4 sph) {"
+    "vec3  p = rS - sph.xyz;"
+    "float b = dot( p, rD );"
+    "float c = dot( p, p ) - sph.w*sph.w;"
+    "float h = b*b - c;"
+    "if( h>0.0 )"
+    "{"
+        "h = -b - sqrt( h );"
+    "}"
+	"return h;"
+"}"
+
+"float intAAQ(in vec3 rS, in vec3 rD, in vec3[] quad) {"
+	"return 0;"
+"}"
+
+"void main() {"
+	"vec3 l = vec3(2.0,-2.0,2.0);"
+	"vec4 s[4] = vec4[4](vec4(0.0, 0.0, 0.0, 0.8),vec4(1.2, 0.0, 0.0, 0.25), vec4(2.0, 0.3, 0.4, 0.4), vec4(2.0, 0.3, -0.5, 0.4));"
+	"vec3 rD = normalize(gl_TexCoord[0].xyz);"
+	"float t = 100;"
+	"float t0;"
+	"int hit = -1;"
+	"for (int i = 0; i < 4; i++) {"
+		"t0 = intSph(rO, rD, s[i]);"
+		"if (t0 > 0 && t0 < t) {"
+			"t = t0;"
+			"hit = i;"
+		"}"
+	"}"
+	"if (hit == -1) { gl_FragColor = vec4(1.0, 0.9, 0.7, 1.0); }"
+	"else {"
+		"int ref_hit = -1;"
+		"vec3 inter = rO + rD * t;"
+		"vec3 norm = normalize(inter - s[hit].xyz);"
+		"vec3 rR = reflect(rD, norm);"
+		
+		"for (int i = 0; i < 4; i++) {"
+			"if (i == hit) { continue; }"
+			"t0 = intSph(inter, rR, s[i]);"
+			"if (t0 > 0 && t0 < t) {"
+				"t = t0;"
+				"ref_hit = i;"
+			"}"
+		"}"
+
+		"if (ref_hit == -1) {"
+			"vec3 lray = normalize(inter - l);"
+			"float lamb = dot(lray, norm);"
+			"gl_FragColor = lamb * vec4(0.8,0.7,0.3,0.0) + vec4(0.2, 0.2, 0.4, 1.0);"
+		"}"
+		"else {"
+			"vec3 ref_inter = inter + rR * t;"
+			"vec3 ref_norm = normalize(ref_inter - s[ref_hit].xyz);"
+			
+			"vec3 lray = normalize(ref_inter - l);"
+			"float lamb = dot(lray, ref_norm);"
+
+			"gl_FragColor = lamb * vec4(0.8,0.7,0.3,0.0) + vec4(0.2, 0.2, 0.4, 1.0);"
+		"}"
+	"}"
+"}"
+;

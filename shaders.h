@@ -21,9 +21,10 @@ extern float t0;
 extern const char *plasma_vshad, *plasma_fshad;
 extern const char *tunnel_vshad, *tunnel_fshad;
 extern const char *cmd_vshad, *cmd_fshad;
+extern const char *cube_vshad, *cube_fshad;
 extern GLuint textures[];
 
-extern GLuint plasma_program, tunnel_program, cmd_program;
+extern GLuint plasma_program, tunnel_program, cmd_program, cube_program;
 
 GLuint buildShader(GLenum type, const char *source, const char *name);
 GLuint buildProgram(GLuint vshad, GLuint fshad, const char *name);
