@@ -18,14 +18,18 @@ void cmd_render(float windowW, float windowH, float consoleX, float consoleY, fl
 {
 	glUseProgram(cmd_program);
 	//render the cmd window
+
+	GLuint pixelsW = consoleW * windowW;
+	GLuint pixelsH = consoleH * windowH;
+
 	GLint var;
 	var = glGetUniformLocation(cmd_program, "cmd_pos");
 	glUniform2i(var,
-				consoleX*windowW-CONSOLE_PIXELS_W/2-LEFT_BORDER,
-				consoleY*windowH-CONSOLE_PIXELS_H/2-BOTTOM_BORDER);
+				consoleX*windowW-pixelsW/2-LEFT_BORDER,
+				consoleY*windowH-pixelsH/2-BOTTOM_BORDER);
 	var = glGetUniformLocation(cmd_program, "cmd_size");
-	glUniform2i(var, CONSOLE_PIXELS_W+LEFT_BORDER+RIGHT_BORDER,
-						CONSOLE_PIXELS_H+BOTTOM_BORDER+TOP_BORDER);
+	glUniform2i(var, pixelsW+LEFT_BORDER+RIGHT_BORDER,
+						pixelsH+BOTTOM_BORDER+TOP_BORDER); // TODO use variables for cmd size to allow stretching
 	var = glGetUniformLocation(cmd_program, "desk_size");
 	glUniform2i(var, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
 

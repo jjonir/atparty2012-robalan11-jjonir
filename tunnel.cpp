@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <math.h>
+#include <string.h>
 #include "shaders.h"
 
 GLuint tunnel_program;
@@ -34,10 +35,13 @@ void tunnel_render(void)
 
 	glUseProgram(tunnel_program);
 	//render the tunnel effect
-
+	
 	GLint var;
+
+	float centerX = windowW/2 + 50*sin((float)t / 1000);
+	float centerY = windowH/2 + 50*cos((float)t / 2000);
 	var = glGetUniformLocation(tunnel_program, "Center");
-	glUniform2f(var, windowW/2+50*sin((float)t/1000), windowH/2+50*cos((float)t/2000));
+	glUniform2f(var, centerX, centerY);
 	var = glGetUniformLocation(tunnel_program, "Tex");
 	glUniform1i(var, 0);
 	var = glGetUniformLocation(tunnel_program, "Move");
@@ -56,15 +60,30 @@ void tunnel_render(void)
 		glVertex3f(consoleX-consoleW/2, consoleY+consoleH/2, -1);
 	glEnd();
 
+	char *alph = "A demo for @-Party 2012!        ";
+	int alph_center = strlen(alph)/2;
+	float centerX_q = (floor(centerX / 8) * 8) / windowW;
+	float centerY_q = (floor((centerY + 7) / 14) * 14 + 3) / windowH;
+	float chwid = 8.0 / windowW;
+	float chhei = 14.0 / windowH;
+	float lx = consoleX-16*chwid;
+	float by = consoleY+2.0/windowH;
+	for(int ii = 0; ii < 32; ii++) {
+		glRasterPos2f(lx+ii*chwid, by);
+		glRasterPos2f(centerX_q+(ii-alph_center)*chwid, centerY_q);
+		glutBitmapCharacter(GLUT_BITMAP_8_BY_13, alph[(ii+t/100)%32]);
+	}
+
 	glutSwapBuffers();
 }
 
 void tunnel_animate(int val)
 {
 	int t = demo_get_time();
-	if(t < 5000)
+	if(t < 10000)
 		glutTimerFunc(10, tunnel_animate, 0);
 	else {
+		t0 = demo_get_time();
 		glutDisplayFunc(plasma_render);
 		glutTimerFunc(10, plasma_animate, 0);
 	}

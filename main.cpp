@@ -1,3 +1,6 @@
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 #include <stdlib.h>
 #include <GL/glew.h>
 #include <GL/glut.h>
@@ -9,8 +12,15 @@ void checkVersions(void);
 void key(unsigned char key, int x, int y);
 void reshape(int w, int h);
 
+#ifdef _WIN32
+int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+	int argc=1;
+	char *argv[1] = {"foo"};
+#else
 int main(int argc, char *argv[])
 {
+#endif
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
@@ -34,10 +44,10 @@ int main(int argc, char *argv[])
 
 	t0 = demo_get_time();
 
-	//glutDisplayFunc(tunnel_render);
-	//glutTimerFunc(10, tunnel_animate, 0);
-	glutDisplayFunc(cube_render);
-	glutTimerFunc(10, cube_animate, 0);
+	glutDisplayFunc(tunnel_render);
+	glutTimerFunc(10, tunnel_animate, 0);
+	//glutDisplayFunc(cube_render);
+	//glutTimerFunc(10, cube_animate, 0);
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(key);
 	glutFullScreen();
@@ -60,7 +70,6 @@ void reshape(int w, int h)
 	glLoadIdentity();
 	glViewport(0, 0, w, h);
 	glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
-	//gluPerspective(45.0f, (GLfloat)w/(GLfloat)h, 0.1f, 100.0f);
 	glMatrixMode(GL_MODELVIEW);
 }
 

@@ -41,8 +41,14 @@ void plasma_render(void)
 	consoleX = (floor(consoleX * windowW / char_w) * char_w) / windowW;
 	consoleY = (floor(consoleY * windowH / char_h) * char_h + char_h/2) / windowH;
 	// Should be 640x350
-	float consoleW = 640.0/windowW;
-	float consoleH = 350.0/windowH;
+	float consoleW, consoleH;
+	if(t < 20000) {
+		consoleW = 640.0/windowW;
+		consoleH = 350.0/windowH;
+	} else {
+		consoleW = (640.0 + (t - 20000) / 10) / windowW;
+		consoleH = (350.0 + (t - 20000) / 10) / windowH;
+	}
 
 	cmd_render(windowW, windowH, consoleX, consoleY, consoleW, consoleH);
 

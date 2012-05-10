@@ -1,4 +1,6 @@
-#include <windows.h>
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <stdio.h>
@@ -12,10 +14,10 @@ int desk_width, desk_height;
 GLubyte *desktop_tex_data;
 
 GLubyte tunnel_tex_data[] =
-"\255\255\255\255"
-"\255\0\0\255"
-"\0\255\0\255"
-"\0\0\255\255";
+"\x80\x80\x80\xFF"
+"\xFF\0\0\xFF"
+"\0\xFF\0\xFF"
+"\0\0\xFF\xFF";
 
 float t0;
 
@@ -58,6 +60,7 @@ GLuint buildProgram(GLuint vshad, GLuint fshad, const char *name)
 
 void grab_screen()
 {
+#ifdef _WIN32
 	HDC screen_dc = GetDC(NULL);
 	desk_width = GetDeviceCaps(screen_dc, HORZRES);
 	desk_height = GetDeviceCaps(screen_dc, VERTRES);
@@ -78,6 +81,8 @@ void grab_screen()
 			desktop_tex_data[i++] = 255;
 		}
 	}
+#else
+#endif
 }
 
 void textures_init()
