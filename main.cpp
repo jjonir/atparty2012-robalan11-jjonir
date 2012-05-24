@@ -40,14 +40,14 @@ int main(int argc, char *argv[])
 	plasma_init();
 	tunnel_init();
 	cmd_init();
-	cube_init();
+	cubes_init();
 
 	t0 = demo_get_time();
 
-	glutDisplayFunc(tunnel_render);
-	glutTimerFunc(10, tunnel_animate, 0);
-	//glutDisplayFunc(cube_render);
-	//glutTimerFunc(10, cube_animate, 0);
+	//glutDisplayFunc(tunnel_render);
+	//glutTimerFunc(10, tunnel_animate, 0);
+	glutDisplayFunc(cubes_render);
+	glutTimerFunc(10, cubes_animate, 0);
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(key);
 	glutFullScreen();

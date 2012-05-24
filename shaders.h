@@ -21,10 +21,10 @@ extern float t0;
 extern const char *plasma_vshad, *plasma_fshad;
 extern const char *tunnel_vshad, *tunnel_fshad;
 extern const char *cmd_vshad, *cmd_fshad;
-extern const char *cube_vshad, *cube_fshad;
+extern const char *cubes_vshad, *cubes_fshad;
 extern GLuint textures[];
 
-extern GLuint plasma_program, tunnel_program, cmd_program, cube_program;
+extern GLuint plasma_program, tunnel_program, cmd_program, cubes_program;
 
 GLuint buildShader(GLenum type, const char *source, const char *name);
 GLuint buildProgram(GLuint vshad, GLuint fshad, const char *name);
@@ -46,6 +46,6 @@ void cmd_init(void);
 void cmd_render(float windowW, float windowH, float consoleX, float consoleY, float consoleW, float consoleH);
 void cmd_animate(int val);
 
-void cube_init(void);
-void cube_render(void);
-void cube_animate(int val);
+void cubes_init(void);
+void cubes_render(void);
+void cubes_animate(int val);
