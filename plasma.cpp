@@ -45,9 +45,17 @@ void plasma_render(void)
 	if(t < 20000) {
 		consoleW = 640.0/windowW;
 		consoleH = 350.0/windowH;
+	} else if(t < 28000) {
+		float p = (t - 20000) / 8000.0;
+		consoleW = (640.0 * (1.0 - p) + windowW * p) / windowW;
+		consoleH = (350.0 * (1.0 - p) + windowH * p) / windowH;
+		consoleX = (consoleX * (1.0 - p) + 0.5 * p);
+		consoleY = (consoleY * (1.0 - p) + 0.5 * p);
 	} else {
-		consoleW = (640.0 + (t - 20000) / 10) / windowW;
-		consoleH = (350.0 + (t - 20000) / 10) / windowH;
+		consoleW = 1.0;
+		consoleH = 1.0;
+		consoleX = 0.5;
+		consoleY = 0.5;
 	}
 
 	cmd_render(windowW, windowH, consoleX, consoleY, consoleW, consoleH);

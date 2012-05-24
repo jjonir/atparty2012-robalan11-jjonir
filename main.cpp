@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
 	tunnel_init();
 	cmd_init();
 	cubes_init();
+	roto_init();
 
 	t0 = demo_get_time();
 

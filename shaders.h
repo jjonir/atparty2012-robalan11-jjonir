@@ -9,12 +9,17 @@
 #define RIGHT_BORDER 23.0
 #define BOTTOM_BORDER 6.0
 
-#define DESKTOP_TEXTURE 0
-#define CMD_ICON_TEXTURE 1
-#define CMD_X_TEXTURE 2
-#define CMD_ARROW_TEXTURE 3
-#define TUNNEL_TEXTURE 4
-#define NUM_TEXTURES 5
+enum {
+	DESKTOP_TEXTURE = 0,
+	CMD_ICON_TEXTURE,
+	CMD_X_TEXTURE,
+	CMD_ARROW_TEXTURE,
+	TUNNEL_TEXTURE,
+	ROTO_1_TEXTURE,
+	ROTO_2_TEXTURE,
+	ROTO_3_TEXTURE,
+	NUM_TEXTURES
+};
 
 extern float t0;
 
@@ -22,9 +27,10 @@ extern const char *plasma_vshad, *plasma_fshad;
 extern const char *tunnel_vshad, *tunnel_fshad;
 extern const char *cmd_vshad, *cmd_fshad;
 extern const char *cubes_vshad, *cubes_fshad;
+extern const char *roto_vshad, *roto_fshad;
 extern GLuint textures[];
 
-extern GLuint plasma_program, tunnel_program, cmd_program, cubes_program;
+extern GLuint plasma_program, tunnel_program, cmd_program, cubes_program, roto_program;
 
 GLuint buildShader(GLenum type, const char *source, const char *name);
 GLuint buildProgram(GLuint vshad, GLuint fshad, const char *name);
@@ -49,3 +55,7 @@ void cmd_animate(int val);
 void cubes_init(void);
 void cubes_render(void);
 void cubes_animate(int val);
+
+void roto_init(void);
+void roto_render(void);
+void roto_animate(int val);
