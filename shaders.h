@@ -18,6 +18,8 @@ enum {
 	ROTO_1_TEXTURE,
 	ROTO_2_TEXTURE,
 	ROTO_3_TEXTURE,
+	ROTO_4_TEXTURE,
+	ROTO_5_TEXTURE,
 	NUM_TEXTURES
 };
 
@@ -59,3 +61,5 @@ void cubes_animate(int val);
 void roto_init(void);
 void roto_render(void);
 void roto_animate(int val);
+
+extern GLubyte temp_tex[14];

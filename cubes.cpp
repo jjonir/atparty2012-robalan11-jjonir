@@ -53,7 +53,7 @@ const char *cubes_vshad =
 ;
 
 const char *cubes_fshad =
-"#version 140\n"
+"#version 120\n"
 "uniform vec2 resolution;\n"
 "uniform float time;\n"
 
