@@ -17,7 +17,11 @@ typedef struct charbmp {
 	uint8_t cols[CHARWID];
 } charbmp_t;
 
+extern GLubyte *partytex;
+extern GLubyte *namestex;
 extern GLubyte *titletex;
+extern int partytexwid;
+extern int namestexwid;
 extern int titletexwid;
 
 void titles_init(void);

@@ -59,11 +59,15 @@ void tunnel_render(void)
 	var = glGetUniformLocation(tunnel_program, "Text");
 	glActiveTexture(GL_TEXTURE4);
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, textures[TITLE_TEXTURE]);
+	if (t < 5000) glBindTexture(GL_TEXTURE_2D, textures[PARTY_TEXTURE]);
+	else if (t < 10000) glBindTexture(GL_TEXTURE_2D, textures[NAMES_TEXTURE]);
+	else glBindTexture(GL_TEXTURE_2D, textures[TITLE_TEXTURE]);
 	glUniform1i(var, 4);
 
 	var = glGetUniformLocation(tunnel_program, "text_size");
-	glUniform2f(var, titletexwid, STRHEI);
+	if (t < 5000) glUniform2f(var, partytexwid, STRHEI);
+	else if (t < 10000) glUniform2f(var, namestexwid, STRHEI);
+	else glUniform2f(var, titletexwid, STRHEI);
 	
 	int textX = centerX - titletexwid / 2;
 	int textY = centerY - STRHEI / 2;
@@ -101,7 +105,7 @@ void tunnel_render(void)
 void tunnel_animate(int val)
 {
 	int t = demo_get_time();
-	if(t < 11500)
+	if(t < 15000)
 		glutTimerFunc(10, tunnel_animate, 0);
 	else {
 		t0 += demo_get_time();

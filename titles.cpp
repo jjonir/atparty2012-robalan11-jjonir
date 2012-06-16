@@ -25,9 +25,9 @@ charbmp_t upcase[26] = {
 	{0xFF, 0x90, 0x90, 0x90, 0x60},
 	{0x7E, 0x81, 0x81, 0x86, 0x7D},
 	{0xFF, 0x90, 0x90, 0x9C, 0x63},
-	{0x62, 0x91, 0x91, 0x91, 0x46},
+	{0x62, 0x91, 0x91, 0x91, 0x4E},
 	{0x80, 0x80, 0xFF, 0x80, 0x80},
-	{0x8E, 0x01, 0x01, 0x01, 0x8E},
+	{0xFE, 0x01, 0x01, 0x01, 0xFE},
 
 	{0xE0, 0x1C, 0x03, 0x1C, 0xE0},
 	{0xFC, 0x03, 0x3C, 0x03, 0xFC},
@@ -52,7 +52,11 @@ charbmp_t space[1] = {
 
 chartexture_t chartextures[128];
 
+GLubyte *partytex;
+GLubyte *namestex;
 GLubyte *titletex;
+int partytexwid;
+int namestexwid;
 int titletexwid;
 
 static void assemble_charbmp(unsigned char i, charbmp_t *bmps, unsigned char base);
@@ -61,7 +65,25 @@ static int build_string_tex(const char *s, GLubyte **tex);
 
 void titles_init(void) {
 	assemble_charbmps();
-	titletexwid = build_string_tex("@PARTY 2012", &titletex);
+	partytexwid = build_string_tex("@PARTY 2012", &partytex);
+	glBindTexture(GL_TEXTURE_2D, textures[PARTY_TEXTURE]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // TODO not repeat
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, partytexwid, STRHEI, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, partytex);
+
+	namestexwid = build_string_tex("PENDERPRODS", &namestex);
+	glBindTexture(GL_TEXTURE_2D, textures[NAMES_TEXTURE]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // TODO not repeat
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, namestexwid, STRHEI, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, namestex);
+
+	titletexwid = build_string_tex("UNTITLED 0", &titletex);
 	glBindTexture(GL_TEXTURE_2D, textures[TITLE_TEXTURE]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // TODO not repeat
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

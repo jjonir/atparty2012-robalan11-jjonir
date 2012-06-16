@@ -17,8 +17,8 @@ public:
 		setPos(1, 10, 5.0, 2.5, 0);
 		setPos(2, 10, -5.0, 8.0, 1.0);
 		setPos(3, 20, -4.0, -5.0, 1.0);
-		setPos(4, 20, 3.0, 1.0, -10.0);
-		setPos(5, 30, -1.0, 1.0, 12.0);
+		setPos(4, 20, -3.0, 1.0, -10.0);
+		setPos(5, 30, 1.0, 1.0, 12.0);
 	}
 
 	void setPos(int i, float t, float x, float y, float z) {
@@ -81,7 +81,14 @@ void cubes_render(void) {
 }
 
 void cubes_animate(int val) {
-	glutTimerFunc(10, cubes_animate, 0);
+	int t = demo_get_time();
+	if(t < 30000)
+		glutTimerFunc(10, cubes_animate, 0);
+	else {
+		t0 += demo_get_time();
+		glutDisplayFunc(roto_render);
+		glutTimerFunc(10, roto_animate, 0);
+	}
 	glutPostRedisplay();
 }
 
@@ -128,7 +135,7 @@ const char *cubes_fshad =
 "{\n"
     "float t = 0.0;\n"
     "vec4 res = vec4(-1.0);\n"
-	"for(float i=0.0;i<96.0;i++){\n"
+	"for(float i=0.0;i<64.0;i++){\n"
 	     "vec4 h = map(ro + rd*t,false);\n"
 		 "if( h.x<0.002 && res.x<0.0){\n"
 		      "res = vec4(t,h.yz,i);\n"
@@ -208,7 +215,7 @@ const char *cubes_fshad =
 
     // camera
 	"vec3 ro = pos;\n"
-    "vec3 ww = normalize(vec3(-1.0,1.0,12.5) - ro);\n"
+    "vec3 ww = normalize(vec3(1.0,1.0,12.5) - ro);\n"
     "vec3 uu = normalize(cross( vec3(0.0,1.0,0.0), ww ));\n"
     "vec3 vv = normalize(cross(ww,uu));\n"
     "vec3 rd = normalize( p.x*uu + p.y*vv + 1.5*ww );\n"
