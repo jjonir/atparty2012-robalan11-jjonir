@@ -75,17 +75,18 @@ void plasma_render(void)
 void plasma_animate(int val)
 {
 	int t = demo_get_time();
-	//if(t < 20000)
+	if(t < 34500)
 		glutTimerFunc(10, plasma_animate, 0);
-	//else {
-	//	glutDisplayFunc(tunnel_render);
-	//	glutTimerFunc(10, tunnel_animate, 0);
-	//}
+	else {
+		t0 += demo_get_time();
+		glutDisplayFunc(cubes_render);
+		glutTimerFunc(10, cubes_animate, 0);
+	}
 
-	if (t > 10000)  { char_w = 4; char_h = 7; sharp = 1.0f; }
-	if (t > 15000) { char_w = 3; char_h = 4; sharp = 1.0f; }
-	if (t > 18000) { char_w = 2; char_h = 2; sharp = 7.0 - t/3000.0; }
-	if (t > 20000) { char_w = 1; char_h = 1; sharp = 7.0 - t/3000.0; }
+	if (t > 7667)  { char_w = 4; char_h = 7; sharp = 1.0f; }
+	if (t > 15333) { char_w = 3; char_h = 4; sharp = 1.0f; }
+	if (t > 19167) { char_w = 2; char_h = 2; sharp = 7.0 - t/3000.0; }
+	if (t > 23000) { char_w = 1; char_h = 1; sharp = 7.0 - t/3000.0; }
 	
 	GLint w_var = glGetUniformLocation(plasma_program, "width");
 	glUniform1i(w_var, glutGet(GLUT_WINDOW_WIDTH));

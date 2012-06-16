@@ -8,6 +8,44 @@
 
 GLuint cubes_program;
 
+class CamPos {
+public:
+	CamPos() {
+		curr = 0;
+		max = 5;
+		setPos(0, 0, 15.0, -1.5, 0);
+		setPos(1, 10, 5.0, 2.5, 0);
+		setPos(2, 10, -5.0, 8.0, 1.0);
+		setPos(3, 20, -4.0, -5.0, 1.0);
+		setPos(4, 20, 3.0, 1.0, -10.0);
+		setPos(5, 30, 0.0, 0.0, 12.0);
+	}
+
+	void setPos(int i, float t, float x, float y, float z) {
+		positions[i][0] = t;
+		positions[i][1] = x;
+		positions[i][2] = y;
+		positions[i][3] = z;
+	}
+
+	float* getPos(float t) {
+		if (t > positions[curr+1][0] && curr < max) curr++;
+		if (t > positions[curr+1][0] && curr < max) curr++;
+		float f = (t-positions[curr][0])/(positions[curr+1][0]-positions[curr][0]);
+		float rx = (1-f)*positions[curr][1] + f*positions[curr+1][1];
+		float ry = (1-f)*positions[curr][2] + f*positions[curr+1][2];
+		float rz = (1-f)*positions[curr][3] + f*positions[curr+1][3];
+		float ret[3] = {rx,ry,rz};
+		return ret;
+	}
+
+	int curr;
+	int max;
+	float positions[16][4];
+};
+
+CamPos camPos = CamPos();
+
 void cubes_init(void) {
 	GLuint vshad = buildShader(GL_VERTEX_SHADER, cubes_vshad, "cube vertex");
 	GLuint fshad = buildShader(GL_FRAGMENT_SHADER, cubes_fshad, "cube fragment");
@@ -25,10 +63,12 @@ void cubes_render(void) {
 	float windowH = glutGet(GLUT_WINDOW_HEIGHT);
 
 	glUseProgram(cubes_program);
-	GLint t_var = glGetUniformLocation(cubes_program, "time");
-	glUniform1f(t_var, t/1000.0);
+	glUniform1f(glGetUniformLocation(cubes_program, "time"), t/1000.0);
+	glUniform1f(glGetUniformLocation(cubes_program, "fade"), 1.0);
 	float resolution[2] = {windowW, windowH};
 	glUniform2fv(glGetUniformLocation(cubes_program, "resolution"), 1, resolution);
+	float* position = camPos.getPos(t/1000.0);
+	glUniform3fv(glGetUniformLocation(cubes_program, "pos"), 1, position);
 
 	glBegin(GL_QUADS);
 		glVertex3f(0.0f, 0.0f, -1);
@@ -55,7 +95,9 @@ const char *cubes_vshad =
 const char *cubes_fshad =
 "#version 120\n"
 "uniform vec2 resolution;\n"
+"uniform vec3 pos;\n"
 "uniform float time;\n"
+"uniform float fade;\n"
 
 "float ease(in float p) {return 3.0*p*p-2.0*p*p*p;}\n"
 
@@ -165,7 +207,7 @@ const char *cubes_fshad =
     "vec3 lightcol = skyCol(normalize(vec3(0.0,1.0,1.0)),light,t);\n"
 
     // camera
-    "vec3 ro = vec3(15.0*cos(0.5*time),1.5,15.0*sin(0.5*time)+12.5);\n"
+	"vec3 ro = pos;\n"
     "vec3 ww = normalize(vec3(0.0,0.0,12.5) - ro);\n"
     "vec3 uu = normalize(cross( vec3(0.0,1.0,0.0), ww ));\n"
     "vec3 vv = normalize(cross(ww,uu));\n"
@@ -213,6 +255,6 @@ const char *cubes_fshad =
     "} else {\n"
         "col = skyCol(rd,light,t);\n"
     "}\n"
-    "gl_FragColor = vec4(col,1.0);\n"
+	"gl_FragColor = vec4(col*clamp(fade,0.0,1.0),1.0);\n"
 "}\n"
 ;

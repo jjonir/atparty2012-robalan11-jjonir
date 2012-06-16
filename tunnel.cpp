@@ -80,10 +80,10 @@ void tunnel_render(void)
 void tunnel_animate(int val)
 {
 	int t = demo_get_time();
-	if(t < 10000)
+	if(t < 11500)
 		glutTimerFunc(10, tunnel_animate, 0);
 	else {
-		t0 = demo_get_time();
+		t0 += demo_get_time();
 		glutDisplayFunc(plasma_render);
 		glutTimerFunc(10, plasma_animate, 0);
 	}

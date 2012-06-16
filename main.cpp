@@ -45,8 +45,8 @@ int main(int argc, char *argv[])
 
 	t0 = demo_get_time();
 
-	glutDisplayFunc(roto_render);
-	glutTimerFunc(10, roto_animate, 0);
+	glutDisplayFunc(tunnel_render);
+	glutTimerFunc(10, tunnel_animate, 0);
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(key);
 	glutFullScreen();
