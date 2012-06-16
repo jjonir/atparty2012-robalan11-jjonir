@@ -157,32 +157,8 @@ void textures_init()
 		GL_RGBA, GL_UNSIGNED_BYTE, (GLubyte *)tunnel_tex_data);
 
 	/* Rotozoomer Textures */
-	//generate bitmap data:
-	GLubyte *roto_1_tex_data = (GLubyte *)malloc(1024*1024*4*sizeof(GLubyte));
-	for(int i = 0; i < 1024; i++) {
-		for(int j = 0; j < 1024; j++) {
-			float x = (float)j / 1024 * 2.0 - 1.0;
-			float y = (float)i / 1024 * 2.0 - 1.0;
-			if((y < (0.8 + 3*x)) && (y < (0.8 - 3*x)) && (y > (-0.8 + 3*x)) && (y > (-0.8 - 3*x)))
-				roto_1_tex_data[4*(1024*i+j)+0] = 0xFF;
-			else
-				roto_1_tex_data[4*(1024*i+j)+0] = 0x00;
-			if((y < (0.8/3 + x/3)) && (y < (0.8/3 - x/3)) && (y > (-0.8/3 + x/3)) && (y > (-0.8/3 - x/3)))
-				roto_1_tex_data[4*(1024*i+j)+1] = 0xFF;
-			else
-				roto_1_tex_data[4*(1024*i+j)+1] = 0x00;
-			roto_1_tex_data[4*(1024*i+j)+2] = 0x00;
-			roto_1_tex_data[4*(1024*i+j)+3] = 0xFF;
-		}
-	}
-	//then:
-	glBindTexture(GL_TEXTURE_2D, textures[ROTO_1_TEXTURE]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // TODO not what I want, lookup wrap params
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // TODO same here
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // TODO ?
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // TODO ? multisample ?
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0,
-		GL_RGBA, GL_UNSIGNED_BYTE, roto_1_tex_data);
+	texgen_compass();
+	texgen_diamond();
 
 	GLubyte *roto_3_tex_data = (GLubyte *)malloc(4096*4096*4*sizeof(GLubyte));
 	memset(roto_3_tex_data, 0, 4096*4096*4*sizeof(GLubyte));
@@ -200,13 +176,14 @@ void textures_init()
 		}
 	}
 	glBindTexture(GL_TEXTURE_2D, textures[ROTO_3_TEXTURE]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // TODO not what I want, lookup wrap params
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // TODO same here
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // TODO ?
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // TODO ? multisample ?
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 4096, 4096, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, roto_3_tex_data);
 
+	/*
 	GLubyte *roto_4_tex_data = (GLubyte *)malloc(1024*1024*4*sizeof(GLubyte));
 	memset(roto_4_tex_data, 0, 1024*1024*4*sizeof(GLubyte));
 	for(int i = 0; i < 1024; i++) {
@@ -231,14 +208,5 @@ void textures_init()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // TODO ? multisample ?
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, roto_4_tex_data);
-
-	GLubyte *roto_5_tex_data = (GLubyte *)malloc(1024 * 1024 * 4 * sizeof(GLubyte));
-	texgen(roto_5_tex_data, 1024, 1024);
-	glBindTexture(GL_TEXTURE_2D, textures[ROTO_5_TEXTURE]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // TODO not what I want, lookup wrap params
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // TODO same here
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // TODO ?
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // TODO ? multisample ?
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0,
-		GL_RGBA, GL_UNSIGNED_BYTE, roto_5_tex_data);
+	*/
 }

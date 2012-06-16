@@ -1,3 +1,8 @@
 #pragma once
 
-void texgen(GLubyte *tex, int16_t w, int16_t h);
+#define ROTO_TEX_W 1024
+#define ROTO_TEX_H 1024
+
+void texgen_blank();
+void texgen_compass();
+void texgen_diamond();

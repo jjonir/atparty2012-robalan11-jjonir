@@ -79,8 +79,8 @@ void plasma_animate(int val)
 		glutTimerFunc(10, plasma_animate, 0);
 	else {
 		t0 += demo_get_time();
-		glutDisplayFunc(cubes_render);
-		glutTimerFunc(10, cubes_animate, 0);
+		glutDisplayFunc(roto_render);
+		glutTimerFunc(10, roto_animate, 0);
 	}
 
 	if (t > 12000)  { char_w = 4; char_h = 7; sharp = 1.0f; }

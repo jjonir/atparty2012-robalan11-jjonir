@@ -55,9 +55,11 @@ chartexture_t chartextures[128];
 GLubyte *partytex;
 GLubyte *namestex;
 GLubyte *titletex;
+GLubyte *endtex;
 int partytexwid;
 int namestexwid;
 int titletexwid;
+int endtexwid;
 
 static void assemble_charbmp(unsigned char i, charbmp_t *bmps, unsigned char base);
 static void assemble_charbmps(void);
@@ -66,6 +68,7 @@ static int build_string_tex(const char *s, GLubyte **tex);
 void titles_init(void) {
 	assemble_charbmps();
 	partytexwid = build_string_tex("@PARTY 2012", &partytex);
+
 	glBindTexture(GL_TEXTURE_2D, textures[PARTY_TEXTURE]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // TODO not repeat
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -91,6 +94,15 @@ void titles_init(void) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, titletexwid, STRHEI, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, titletex);
+
+	endtexwid = build_string_tex("END", &endtex);
+	glBindTexture(GL_TEXTURE_2D, textures[END_TEXTURE]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // TODO not repeat
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, endtexwid, STRHEI, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, endtex);
 }
 
 void assemble_charbmp(unsigned char i, charbmp_t *bmps, unsigned char base) {

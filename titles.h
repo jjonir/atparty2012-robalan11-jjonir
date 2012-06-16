@@ -20,8 +20,10 @@ typedef struct charbmp {
 extern GLubyte *partytex;
 extern GLubyte *namestex;
 extern GLubyte *titletex;
+extern GLubyte *endtex;
 extern int partytexwid;
 extern int namestexwid;
 extern int titletexwid;
+extern int endtexwid;
 
 void titles_init(void);

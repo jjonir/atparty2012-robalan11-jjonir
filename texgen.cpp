@@ -1,17 +1,92 @@
 #include <gl/glew.h>
 #include <gl/glut.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include "texgen.h"
+#include "shaders.h"
 
 static void trifill(GLubyte *tex, GLubyte r, GLubyte g, GLubyte b,
 					int16_t w, int16_t h, int16_t x1, int16_t y1,
 					int16_t x2, int16_t y2, int16_t x3, int16_t y3);
+static void quadfill(GLubyte *tex, GLubyte r, GLubyte g, GLubyte b,
+					int16_t w, int16_t h, int16_t x1, int16_t y1,
+					int16_t x2, int16_t y2, int16_t x3, int16_t y3, int16_t x4, int16_t y4);
 
-void texgen(GLubyte *tex, int16_t w, int16_t h) {
-	trifill(tex, 0x80, 0x80, 0xFF, w, h, 0, 0, 50, 0, 1, 50);
-	trifill(tex, 0xFF, 0, 0, w, h, w/2-w/8, h/2-h/8, w/2+w/8, h/2-h/8, w/2, h/2+h/8);
-	trifill(tex, 0, 0, 0xFF, w, h, 0, 0, 100, 0, 100, 50);
-	trifill(tex, 0, 0xFF, 0, w, h, w/2-w/8, h/2, w/2+w/8, h/2, w/2, h/2+h/8);
+void texgen_blank() {
+	GLubyte *tex_data = (GLubyte *)malloc(ROTO_TEX_W*ROTO_TEX_H*4*sizeof(GLubyte));
+	
+	glBindTexture(GL_TEXTURE_2D, textures[ROTO_0_TEXTURE]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ROTO_TEX_W, ROTO_TEX_H, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, tex_data);
+}
+
+void texgen_compass() {
+	GLubyte *tex_data = (GLubyte *)malloc(ROTO_TEX_W*ROTO_TEX_H*4*sizeof(GLubyte));
+
+	quadfill(tex_data, 0xFF, 0x00, 0x00, ROTO_TEX_W, ROTO_TEX_H,
+			ROTO_TEX_W/2, 0,
+			ROTO_TEX_W/2-ROTO_TEX_W/8, ROTO_TEX_H/2,
+			ROTO_TEX_W/2, ROTO_TEX_H,
+			ROTO_TEX_W/2+ROTO_TEX_W/8, ROTO_TEX_H/2);
+	quadfill(tex_data, 0x00, 0xFF, 0x00, ROTO_TEX_W, ROTO_TEX_H,
+			0, ROTO_TEX_H/2,
+			ROTO_TEX_W/2, ROTO_TEX_H/2-ROTO_TEX_H/8,
+			ROTO_TEX_W, ROTO_TEX_H/2,
+			ROTO_TEX_W/2, ROTO_TEX_H/2+ROTO_TEX_H/8);
+
+	glBindTexture(GL_TEXTURE_2D, textures[ROTO_1_TEXTURE]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ROTO_TEX_W, ROTO_TEX_H, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, tex_data);
+}
+
+void texgen_diamond() {
+	GLubyte *tex_data = (GLubyte *)malloc(1024*1024*4*sizeof(GLubyte));
+
+	//trifill(
+	quadfill(tex_data, 0xFF, 0x80, 0x80, ROTO_TEX_W, ROTO_TEX_H,
+			ROTO_TEX_W/2, 0,
+			ROTO_TEX_W/2+ROTO_TEX_W/16, ROTO_TEX_H/4,
+			ROTO_TEX_W/2, ROTO_TEX_H/2,
+			ROTO_TEX_W/2-ROTO_TEX_W/16, ROTO_TEX_H/4);
+	quadfill(tex_data, 0x80, 0xFF, 0x80, ROTO_TEX_W, ROTO_TEX_H,
+			ROTO_TEX_W/2, ROTO_TEX_H,
+			ROTO_TEX_W/2+ROTO_TEX_W/16, ROTO_TEX_H*3/4,
+			ROTO_TEX_W/2, ROTO_TEX_H/2,
+			ROTO_TEX_W/2-ROTO_TEX_W/16, ROTO_TEX_H/4);
+	trifill(tex_data, 0x80, 0x80, 0xFF, ROTO_TEX_W, ROTO_TEX_H,
+			0, ROTO_TEX_H/2,
+			ROTO_TEX_H/4, ROTO_TEX_H/2+ROTO_TEX_H/16,
+			ROTO_TEX_W/2, ROTO_TEX_H/2);
+	trifill(tex_data, 0x80, 0x80, 0xFF, ROTO_TEX_W, ROTO_TEX_H,
+			0, ROTO_TEX_H/2,
+			ROTO_TEX_W/4, ROTO_TEX_H/2-ROTO_TEX_H/16,
+			ROTO_TEX_W/2, ROTO_TEX_H/2);
+	/*
+	quadfill(tex_data, 0xFF, 0xD0, 0xD0, ROTO_TEX_W, ROTO_TEX_H,
+			512, 0, 512+32, 256, 512+96, 512, 512+96, 256);
+	quadfill(tex_data, 0xD0, 0xFF, 0xD0, ROTO_TEX_W, ROTO_TEX_H,
+			512, 0, 512-32, 256, 512-96, 512, 512-96, 256);
+	trifill(tex_data, 0x0D, 0xD0, 0xFF, ROTO_TEX_W, ROTO_TEX_H,
+			512+32, 256, 512, 512, 512+96, 512);
+	trifill(tex_data, 0xD0, 0xD0, 0xFF, ROTO_TEX_W, ROTO_TEX_H,
+			512-32, 256, 512, 512, 512-96, 512);
+	*/
+
+	glBindTexture(GL_TEXTURE_2D, textures[ROTO_2_TEXTURE]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ROTO_TEX_W, ROTO_TEX_H, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, tex_data);
 }
 
 // Fill a triangle with a color
@@ -96,4 +171,11 @@ static void trifill(GLubyte *tex, GLubyte r, GLubyte g, GLubyte b,
 			tex[4 * (y * w + x) + 3] = 0xFF;
 		}
 	}
+}
+
+static void quadfill(GLubyte *tex, GLubyte r, GLubyte g, GLubyte b,
+					int16_t w, int16_t h, int16_t x1, int16_t y1,
+					int16_t x2, int16_t y2, int16_t x3, int16_t y3, int16_t x4, int16_t y4) {
+	trifill(tex, r, g, b, w, h, x1, y1, x2, y2, x3, y3);
+	trifill(tex, r, g, b, w, h, x1, y1, x3, y3, x4, y4);
 }

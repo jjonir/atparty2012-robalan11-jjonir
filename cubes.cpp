@@ -1,5 +1,6 @@
 #include <gl/glew.h>
 #include <gl/glut.h>
+#include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
 
@@ -85,9 +86,10 @@ void cubes_animate(int val) {
 	if(t < 30000)
 		glutTimerFunc(10, cubes_animate, 0);
 	else {
-		t0 += demo_get_time();
-		glutDisplayFunc(roto_render);
-		glutTimerFunc(10, roto_animate, 0);
+		//t0 += demo_get_time();
+		//glutDisplayFunc(roto_render);
+		//glutTimerFunc(10, roto_animate, 0);
+		exit(0);
 	}
 	glutPostRedisplay();
 }
