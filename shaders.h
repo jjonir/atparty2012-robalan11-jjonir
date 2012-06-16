@@ -41,6 +41,7 @@ GLuint buildProgram(GLuint vshad, GLuint fshad, const char *name);
 float demo_get_time(void);
 
 void grab_screen(void);
+void cmd_textures_init(void);
 void textures_init(void);
 
 void plasma_init(void);

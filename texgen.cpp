@@ -9,9 +9,9 @@ static void trifill(GLubyte *tex, GLubyte r, GLubyte g, GLubyte b,
 
 void texgen(GLubyte *tex, int16_t w, int16_t h) {
 	trifill(tex, 0x80, 0x80, 0xFF, w, h, 0, 0, 50, 0, 1, 50);
-	//trifill(tex, 0xFF, 0, 0, w, h, w/2-w/8, h/2-h/8, w/2+w/8, h/2-h/8, w/2, h/2+h/8);
-	//trifill(tex, 0, 0, 0xFF, w, h, 0, 0, 100, 0, 100, 50);
-	//trifill(tex, 0, 0xFF, 0, w, h, w/2-w/8, h/2, w/2+w/8, h/2, w/2, h/2+h/8);
+	trifill(tex, 0xFF, 0, 0, w, h, w/2-w/8, h/2-h/8, w/2+w/8, h/2-h/8, w/2, h/2+h/8);
+	trifill(tex, 0, 0, 0xFF, w, h, 0, 0, 100, 0, 100, 50);
+	trifill(tex, 0, 0xFF, 0, w, h, w/2-w/8, h/2, w/2+w/8, h/2, w/2, h/2+h/8);
 }
 
 // Fill a triangle with a color
@@ -80,10 +80,10 @@ static void trifill(GLubyte *tex, GLubyte r, GLubyte g, GLubyte b,
 		if(y < 0) continue;
 		if(y >= h) break;
 
-		if(x2 > x1) xleft = x1 + (j12 >> 16);
-		else xleft = x1 - (j12 >> 16);
-		if(x3 > x1) xright = x1 + (j13 >> 16);
-		else xright = x1 - (j13 >> 16);
+		if(x3 > x1) xleft = x1 + (j13 >> 16);
+		else xleft = x1 - (j13 >> 16);
+		if(x3 > x2) xright = x2 + (j23 >> 16);
+		else xright = x2 - (j23 >> 16);
 		if(xright < xleft) { temp = xleft; xleft = xright; xright = temp; }
 
 		if(xleft < 0) xleft = 0;

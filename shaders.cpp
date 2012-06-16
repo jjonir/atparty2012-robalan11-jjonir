@@ -89,10 +89,8 @@ void grab_screen()
 #endif
 }
 
-void textures_init()
+void cmd_textures_init()
 {
-	glGenTextures(NUM_TEXTURES, textures);
-
 	/* Desktop Texture */
 	glBindTexture(GL_TEXTURE_2D, textures[DESKTOP_TEXTURE]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -145,7 +143,10 @@ void textures_init()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 8, 4, 0, GL_RGBA,
 			GL_UNSIGNED_BYTE, (GLubyte *)upTexData);
-	
+}
+
+void textures_init()
+{
 	/* Tunnel Texture */
 	glBindTexture(GL_TEXTURE_2D, textures[TUNNEL_TEXTURE]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

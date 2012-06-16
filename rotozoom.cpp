@@ -41,17 +41,17 @@ void roto_render(void)
 
 	GLint t0_var = glGetUniformLocation(roto_program, "tex0");
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textures[ROTO_1_TEXTURE]);
+	glBindTexture(GL_TEXTURE_2D, textures[ROTO_5_TEXTURE]);
 	glUniform1i(t0_var, 0);
 	
 	GLint t1_var = glGetUniformLocation(roto_program, "tex1");
 	glActiveTexture(GL_TEXTURE4);
-	glBindTexture(GL_TEXTURE_2D, textures[TITLE_TEXTURE]);
+	glBindTexture(GL_TEXTURE_2D, textures[ROTO_1_TEXTURE]);
 	glUniform1i(t1_var, 4);
 	
 	GLint t2_var = glGetUniformLocation(roto_program, "tex2");
 	glActiveTexture(GL_TEXTURE8);
-	glBindTexture(GL_TEXTURE_2D, textures[ROTO_5_TEXTURE]);
+	glBindTexture(GL_TEXTURE_2D, textures[ROTO_2_TEXTURE]);
 	glUniform1i(t2_var, 8);
 
 	glBegin(GL_QUADS);
