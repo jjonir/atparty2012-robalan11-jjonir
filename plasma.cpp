@@ -85,8 +85,8 @@ void plasma_animate(int val)
 
 	if (t > 12000)  { char_w = 4; char_h = 7; sharp = 1.0f; }
 	if (t > 16000) { char_w = 3; char_h = 4; sharp = 1.0f; }
-	if (t > 19000) { char_w = 2; char_h = 2; sharp = 7.0 - t/3000.0; }
-	if (t > 23000) { char_w = 1; char_h = 1; sharp = 7.0 - t/3000.0; }
+	if (t > 19000) { char_w = 2; char_h = 2; sharp = 7.3 - t/3000.0; }
+	if (t > 23000) { char_w = 1; char_h = 1; sharp = 7.3 - t/3000.0; }
 	
 	GLint w_var = glGetUniformLocation(plasma_program, "width");
 	glUniform1i(w_var, glutGet(GLUT_WINDOW_WIDTH));
