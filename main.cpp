@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 	glutKeyboardFunc(key);
 	glutFullScreen();
 	glutMainLoop();
-
+	
 	return 0;
 }
 
