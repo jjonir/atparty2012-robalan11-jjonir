@@ -183,32 +183,6 @@ void textures_init()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, roto_1_tex_data);
 
-	FILE *f = fopen("final.tga", "rb");
-	fseek(f, 12, 0);
-	int wl = fgetc(f);
-	int wh = fgetc(f);
-	int w = wl + (wh << 8);
-	int hl = fgetc(f);
-	int hh = fgetc(f);
-	int h = hl + (hh << 8);
-	GLubyte *roto_2_tex_data = (GLubyte *)malloc(w*h*4*sizeof(GLubyte));
-	for(int i = 0; i < h; i++) {
-		for(int j = 0; j < w; j++) {
-			roto_2_tex_data[4*(w*i+j)+2] = fgetc(f);
-			roto_2_tex_data[4*(w*i+j)+1] = fgetc(f);
-			roto_2_tex_data[4*(w*i+j)+0] = fgetc(f);
-			roto_2_tex_data[4*(w*i+j)+3] = fgetc(f);
-		}
-	}
-	fclose(f);
-	glBindTexture(GL_TEXTURE_2D, textures[ROTO_2_TEXTURE]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // TODO not what I want, lookup wrap params
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // TODO same here
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // TODO ?
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // TODO ? multisample ?
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
-		GL_RGBA, GL_UNSIGNED_BYTE, roto_2_tex_data);
-
 	GLubyte *roto_3_tex_data = (GLubyte *)malloc(4096*4096*4*sizeof(GLubyte));
 	memset(roto_3_tex_data, 0, 4096*4096*4*sizeof(GLubyte));
 	for(int i = 0; i < 4096; i++) {
@@ -259,14 +233,6 @@ void textures_init()
 
 	GLubyte *roto_5_tex_data = (GLubyte *)malloc(1024 * 1024 * 4 * sizeof(GLubyte));
 	texgen(roto_5_tex_data, 1024, 1024);
-	/*
-	for(int i = 0; i < 1024; i++) {
-		for(int j = 0; j < 1024; j++) {
-
-			//foo
-		}
-	}
-	*/
 	glBindTexture(GL_TEXTURE_2D, textures[ROTO_5_TEXTURE]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // TODO not what I want, lookup wrap params
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // TODO same here
@@ -274,17 +240,4 @@ void textures_init()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // TODO ? multisample ?
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, roto_5_tex_data);
-
-
-	memset(temp_tex, 0, 14);
-	temp_tex[0] |= 0x01;
-	temp_tex[1] |= 0x03;
-	temp_tex[2] |= 0x07;
-	temp_tex[4] |= 0x0F;
-	temp_tex[6] |= 0x1F;
-	temp_tex[10] |= 0x3F;
-	temp_tex[12] |= 0x7F;
-	temp_tex[13] |= 0xFF;
-	//memcpy(temp_tex, icon_image.pixel_data, 14*16*4+1);
 }
-GLubyte temp_tex[14];

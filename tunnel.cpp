@@ -3,8 +3,11 @@
 #include <math.h>
 #include <string.h>
 #include "shaders.h"
+#include "titles.h"
 
 GLuint tunnel_program;
+static int char_w = 8;
+static int char_h = 14;
 
 void tunnel_init(void)
 {
@@ -28,8 +31,8 @@ void tunnel_render(void)
 	float consoleH = CONSOLE_PIXELS_H/windowH;
 	
 	// Clamp console to character borders
-	consoleX = (floor(consoleX * windowW / 8) * 8) / windowW; // hard-coding char_w as 8
-	consoleY = (floor(consoleY * windowH / 14) * 14 + 14/2) / windowH; // hard-coding char_h as 14
+	consoleX = (floor(consoleX * windowW / char_w) * char_w) / windowW;
+	consoleY = (floor(consoleY * windowH / char_h) * char_h + char_h/2) / windowH;
 
 	cmd_render(windowW, windowH, consoleX, consoleY, consoleW, consoleH);
 
@@ -53,6 +56,22 @@ void tunnel_render(void)
 	glBindTexture(GL_TEXTURE_2D, textures[TUNNEL_TEXTURE]);
 	glUniform1i(var, 0);
 
+	var = glGetUniformLocation(tunnel_program, "Text");
+	glActiveTexture(GL_TEXTURE4);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, textures[TITLE_TEXTURE]);
+	glUniform1i(var, 4);
+
+	var = glGetUniformLocation(tunnel_program, "text_size");
+	glUniform2f(var, titletexwid, STRHEI);
+	
+	int textX = centerX - titletexwid / 2;
+	int textY = centerY - STRHEI / 2;
+	textX = floor((float)textX / char_w) * char_w;
+	textY = floor((float)textY / char_h) * char_h;
+	var = glGetUniformLocation(tunnel_program, "text_pos");
+	glUniform2i(var, textX, textY);
+
 	glBegin(GL_QUADS);
 		glVertex3f(consoleX-consoleW/2, consoleY-consoleH/2, -1);
 		glVertex3f(consoleX+consoleW/2, consoleY-consoleH/2, -1);
@@ -60,10 +79,11 @@ void tunnel_render(void)
 		glVertex3f(consoleX-consoleW/2, consoleY+consoleH/2, -1);
 	glEnd();
 
+	/*
 	char *alph = "A demo for @-Party 2012!        ";
 	int alph_center = strlen(alph)/2;
-	float centerX_q = (floor(centerX / 8) * 8) / windowW;
-	float centerY_q = (floor((centerY + 7) / 14) * 14 + 3) / windowH;
+	float centerX_q = (floor(centerX / char_w) * char_w) / windowW;
+	float centerY_q = (floor((centerY + char_h/2) / char_h) * char_h + 3) / windowH;
 	float chwid = 8.0 / windowW;
 	float chhei = 14.0 / windowH;
 	float lx = consoleX-16*chwid;
@@ -73,6 +93,7 @@ void tunnel_render(void)
 		glRasterPos2f(centerX_q+(ii-alph_center)*chwid, centerY_q);
 		glutBitmapCharacter(GLUT_BITMAP_8_BY_13, alph[(ii+t/100)%32]);
 	}
+	*/
 
 	glutSwapBuffers();
 }
@@ -89,9 +110,9 @@ void tunnel_animate(int val)
 	}
 
 	GLint char_w_var = glGetUniformLocation(tunnel_program, "char_w");
-	glUniform1i(char_w_var, 8);
+	glUniform1i(char_w_var, char_w);
 	GLint char_h_var = glGetUniformLocation(tunnel_program, "char_h");
-	glUniform1i(char_h_var, 14); // hardcode constants for now, they won't change right?
+	glUniform1i(char_h_var, char_h);
 	
 
 	glutPostRedisplay();
@@ -100,7 +121,7 @@ void tunnel_animate(int val)
 const char *tunnel_vshad =
 "#version 120\n"
 "void main() {"
-"	gl_Position = ftransform();"
+	"gl_Position = ftransform();"
 "}"
 ;
 
@@ -108,20 +129,27 @@ const char *tunnel_fshad =
 "#version 120\n"
 "uniform vec2 Center;"
 "uniform sampler2D Tex;"
+"uniform sampler2D Text;"
+"uniform vec2 text_size;"
+"uniform ivec2 text_pos;"
 "uniform vec2 Move;"
 "uniform int char_w;"
 "uniform int char_h;"
 "void main() {"
-"	float xchar = floor(gl_FragCoord.x/char_w)*char_w;"
-"   float ychar = floor(gl_FragCoord.y/char_h)*char_h;"
-"	vec2 v = vec2(xchar,ychar) - Center;"
-"	float dist = length(v);"
-"	float angle = atan(v.y, v.x);"
-"	vec2 transformedCoord = vec2(10/dist, angle*2/3.1415)+Move;"
-"	if (dist < 20) {"
-"		gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);"
-"	} else {"
-"		gl_FragColor = texture2D(Tex, transformedCoord);"
-"	}"
+	"float xchar = floor(gl_FragCoord.x/char_w)*char_w;"
+	"float ychar = floor(gl_FragCoord.y/char_h)*char_h;"
+	"vec2 v = vec2(xchar,ychar) - Center;"
+	"float dist = length(v);"
+	"float angle = atan(v.y, v.x);"
+	"vec2 transformedCoord = vec2(10/dist, angle*2/3.1415)+Move;"
+	"vec2 text_coord = (gl_FragCoord.xy-vec2(text_pos))/text_size;"
+	"if (text_coord.x >= 0.0 && text_coord.y >= 0.0 && text_coord.x <= 1.0 && text_coord.y <= 1.0 &&"
+			"texture2D(Text, text_coord) == vec4(1.0, 1.0, 1.0, 1.0)) {"
+		"gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);"
+	"} else if (dist < 20) {"
+		"gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);"
+	"} else {"
+		"gl_FragColor = texture2D(Tex, transformedCoord);"
+	"}"
 "}"
 ;

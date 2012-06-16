@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "shaders.h"
+#include "titles.h"
 
 void checkVersions(void);
 void key(unsigned char key, int x, int y);
@@ -37,6 +38,7 @@ int main(int argc, char *argv[])
 
 	grab_screen();
 	textures_init();
+	titles_init();
 	plasma_init();
 	tunnel_init();
 	cmd_init();

@@ -29,7 +29,7 @@ void cmd_render(float windowW, float windowH, float consoleX, float consoleY, fl
 				consoleY*windowH-pixelsH/2-BOTTOM_BORDER);
 	var = glGetUniformLocation(cmd_program, "cmd_size");
 	glUniform2i(var, pixelsW+LEFT_BORDER+RIGHT_BORDER,
-						pixelsH+BOTTOM_BORDER+TOP_BORDER); // TODO use variables for cmd size to allow stretching
+						pixelsH+BOTTOM_BORDER+TOP_BORDER);
 	var = glGetUniformLocation(cmd_program, "desk_size");
 	glUniform2i(var, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
 
@@ -109,7 +109,7 @@ const char *cmd_fshad =
 "		TX(XTex, vec2(RX-38,RY-7)/vec2(8,8));"
 "	EI(!(RX == 32 || RX == 33))" //the rest, sans gap
 "		CL(236, 233, 216);"
-"	else" //TODO button labels
+"	else"
 "		rv = false;"
 "	return rv;"
 "}"
