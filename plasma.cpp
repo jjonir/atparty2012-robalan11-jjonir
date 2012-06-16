@@ -29,8 +29,8 @@ void plasma_render(void)
 	float consoleX = 0.5;
 	float consoleY = 0.5;
 
-	if (t > 8000) {
-		float theta = t/2000 - 4;
+	if (t > 7667) {
+		float theta = t/2000 - 3.8335;
 		float radius = 0.3*sin(3*theta);
 
 		consoleX = 0.5 + radius*sin(theta);
@@ -75,7 +75,7 @@ void plasma_render(void)
 void plasma_animate(int val)
 {
 	int t = demo_get_time();
-	if(t < 34500)
+	if(t < 35000)
 		glutTimerFunc(10, plasma_animate, 0);
 	else {
 		t0 += demo_get_time();
@@ -83,9 +83,9 @@ void plasma_animate(int val)
 		glutTimerFunc(10, cubes_animate, 0);
 	}
 
-	if (t > 7667)  { char_w = 4; char_h = 7; sharp = 1.0f; }
-	if (t > 15333) { char_w = 3; char_h = 4; sharp = 1.0f; }
-	if (t > 19167) { char_w = 2; char_h = 2; sharp = 7.0 - t/3000.0; }
+	if (t > 12000)  { char_w = 4; char_h = 7; sharp = 1.0f; }
+	if (t > 16000) { char_w = 3; char_h = 4; sharp = 1.0f; }
+	if (t > 19000) { char_w = 2; char_h = 2; sharp = 7.0 - t/3000.0; }
 	if (t > 23000) { char_w = 1; char_h = 1; sharp = 7.0 - t/3000.0; }
 	
 	GLint w_var = glGetUniformLocation(plasma_program, "width");
