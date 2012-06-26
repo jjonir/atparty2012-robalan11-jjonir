@@ -8,6 +8,8 @@
 #include <math.h>
 #include "shaders.h"
 #include "titles.h"
+#include "ufmod.h"
+#include "resource.h"
 
 void checkVersions(void);
 void key(unsigned char key, int x, int y);
@@ -47,13 +49,16 @@ int main(int argc, char *argv[])
 	cubes_init();
 	roto_init();
 
-	t0 = demo_get_time();
-
 	glutDisplayFunc(tunnel_render);
 	glutTimerFunc(10, tunnel_animate, 0);
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(key);
 	glutFullScreen();
+
+	uFMOD_PlaySong((void *)SONG, 0, XM_RESOURCE);
+
+	t0 = demo_get_time();
+
 	glutMainLoop();
 	
 	return 0;
