@@ -1,0 +1,16 @@
+CC = gcc
+CXX = c++
+CFLAGS = -Wall -pedantic -ansi -DMOD_OBJECT_FILE
+CPPFLAGS = -Wall -pedantic -ansi -DMOD_OBJECT_FILE
+LDLIBS = ufmod.obj -lglew32 -lfreeglut -lglu32 -lopengl32 -lm -lgdi32 -lwinmm
+OBJECTS = cmd.o cubes.o plasma.o rotozoom.o shaders.o texgen.o titles.o tunnel.o music.o
+
+all: main
+
+main: $(OBJECTS)
+
+music.o:
+	objcopy -B i386 -I binary -O elf32-i386 music.xm music.o
+
+clean:
+	rm -f $(OBJECTS) main.exe

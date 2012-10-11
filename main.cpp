@@ -9,7 +9,13 @@
 #include "shaders.h"
 #include "titles.h"
 #include "ufmod.h"
+
+#ifdef MOD_OBJECT_FILE
+extern char binary_music_xm_start;
+extern char binary_music_xm_size;
+#else
 #include "resource.h"
+#endif
 
 void checkVersions(void);
 void key(unsigned char key, int x, int y);
@@ -19,7 +25,7 @@ void reshape(int w, int h);
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	int argc=1;
-	char *argv[1] = {"foo"};
+	char *argv[3] = {(char *)"foo"};
 #else
 int main(int argc, char *argv[])
 {
@@ -55,7 +61,12 @@ int main(int argc, char *argv[])
 	glutKeyboardFunc(key);
 	glutFullScreen();
 
+#ifdef MOD_OBJECT_FILE
+	uFMOD_PlaySong((void *)&binary_music_xm_start,
+			(void *)&binary_music_xm_size, XM_MEMORY);
+#else
 	uFMOD_PlaySong((void *)SONG, 0, XM_RESOURCE);
+#endif
 
 	t0 = demo_get_time();
 

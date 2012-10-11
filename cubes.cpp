@@ -29,15 +29,16 @@ public:
 		positions[i][3] = z;
 	}
 
-	float* getPos(float t) {
+	void getPos(float t, float *pos) {
 		if (t > positions[curr+1][0] && curr < max) curr++;
 		if (t > positions[curr+1][0] && curr < max) curr++;
 		float f = (t-positions[curr][0])/(positions[curr+1][0]-positions[curr][0]);
 		float rx = (1-f)*positions[curr][1] + f*positions[curr+1][1];
 		float ry = (1-f)*positions[curr][2] + f*positions[curr+1][2];
 		float rz = (1-f)*positions[curr][3] + f*positions[curr+1][3];
-		float ret[3] = {rx,ry,rz};
-		return ret;
+		pos[0] = rx;
+		pos[1] = ry;
+		pos[2] = rz;
 	}
 
 	int curr;
@@ -68,7 +69,8 @@ void cubes_render(void) {
 	glUniform1f(glGetUniformLocation(cubes_program, "fade"), 1.0);
 	float resolution[2] = {windowW, windowH};
 	glUniform2fv(glGetUniformLocation(cubes_program, "resolution"), 1, resolution);
-	float* position = camPos.getPos(t/1000.0);
+	float position[3];
+	camPos.getPos(t/1000.0, position);
 	glUniform3fv(glGetUniformLocation(cubes_program, "pos"), 1, position);
 
 	glBegin(GL_QUADS);
